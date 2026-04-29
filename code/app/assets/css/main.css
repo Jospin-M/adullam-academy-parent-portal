@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg: #F7F5F1;
+  }
+
+  html, body {
+    background: var(--bg);
+  }
+}
