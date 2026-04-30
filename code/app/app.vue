@@ -10,4 +10,8 @@
         <Todos />
     </div>
   </div>
+
+  <div class="max-w-[1200px] mx-auto px-5 sm:px-10">
+    <ActivityChart />
+  </div>
 </template>
