@@ -1,8 +1,10 @@
 <script setup lang="ts">
   import Activity from './components/activity-chart/Activity.vue';
   import Perfomance from './components/performance/Perfomance.vue';
-  import Suggestions from "./components/practice-suggestions/Suggestions.vue";
   import LessonProgress from './components/progress/LessonProgress.vue';
+  import Suggestions from "./components/practice-suggestions/Suggestions.vue";
+ 
+  const lastUpdated = '3 hours ago';
 </script>
 
 <template>
@@ -33,5 +35,9 @@
   <div class="max-w-[1200px] mx-auto px-5 sm:px-10">
     <Activity />
     <Suggestions />
+  </div>
+
+  <div class="border-t border-[#E7E5E0] py-4 px-5 sm:px-10 max-w-[1200px] mx-auto flex justify-end">
+    <span class="text-[12px] text-[#78716C]">Last updated {{ lastUpdated }}</span>
   </div>
 </template>
