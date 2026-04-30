@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import Challenge from './Challenge.vue';
-
+    import Quiz from './Quiz.vue';
 </script>
 
 <template>
@@ -8,5 +8,8 @@
         <span class="text-[11px] font-medium tracking-[0.09em] uppercase text-[#78716C]">Performance</span>
     </div>
 
-    <Challenge />
+    <div class="flex items-end gap-7 mb-[10px]">
+        <Challenge />
+        <Quiz />
+    </div>
 </template>
