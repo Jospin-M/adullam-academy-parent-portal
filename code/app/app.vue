@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import Header from './components/header/Header.vue';
   import Activity from './components/activity-chart/Activity.vue';
-  import Perfomance from './components/performance/Perfomance.vue';
+  import Perfomance from './components/performance/Performance.vue';
   import LessonProgress from './components/progress/LessonProgress.vue';
   import Suggestions from "./components/practice-suggestions/Suggestions.vue";
  
