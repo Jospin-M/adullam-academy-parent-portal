@@ -1,5 +1,5 @@
 <script setup>
-    import { reactive } from 'vue';
+    import { reactive, ref, onMounted } from 'vue';
 
     const data = reactive({
         insight: "Elijah has two things that need your attention this week.",
@@ -58,7 +58,6 @@
     const tpResponses = reactive(
         data.actionItems.reduce((acc, _, itemIndex) => {
             data.actionItems[itemIndex].talkingPoints.forEach((tp) => {
-
                 acc[tp.id] = null;
             });
 
@@ -71,34 +70,36 @@
         { label: "Still struggling", type: "struggling" }
     ];
 
-    /**
-     * Toggles the visibility of talking points for an action item
-     * @param {string} id - The id of the action item that is being toggled
-     */
+    const listRef = ref(null)
+    const scrollHeight = ref(null)
+
+    onMounted(() => {
+        if (!listRef.value || data.actionItems.length <= 3) return;
+
+        const items = listRef.value.querySelectorAll('.action-item');
+
+        let height = 0;
+        
+        for (let i = 0; i < 3 && i < items.length; i++) {
+            height += items[i].getBoundingClientRect().height;
+        }
+
+        scrollHeight.value = height;
+    })
+
     function toggleTP(id) {
         state.openTP[id] = !state.openTP[id];
     }
 
-    /**
-     * Records the user's response to a talking point question
-     * @param {string} tpID - The unique identifier of the talking point (e.g., "tp-1-1")
-     * @param {string} type - The response type: "got-it", "struggling", or "skipped"
-     */
     function selectTPChip(tpID, type) {
         tpResponses[tpID] = type;
     }
 
-    /**
-     * Sends all talking point responses for an action item to the server
-     * @param {number} actionItemId - The ID of the action item whose responses should be saved
-     */
     function saveTalkingPointResponses(actionItemId) {
         const action = data.actionItems.find(action => action.id === actionItemId);
         action.talkingPoints.forEach(tp => {
-            // these requests can be queued, then we do a bulk write
             console.log("sending request to save talking point", { id: tp.id, response: tpResponses[tp.id] })
         });
-
         data.actionItems = data.actionItems.filter(item => item.id !== actionItemId);
     }
 </script>
@@ -110,77 +111,79 @@
 
     <div class="text-[11px] font-medium tracking-[0.09em] uppercase text-[#78716C] mb-4" id="action-label">Action items</div>
 
-    <ul class="list-none" id="action-list" aria-label="Action items">
-        <template v-for="(item, itemIndex) in data.actionItems" :key="itemIndex">
-            <li
-                class="action-item flex items-start gap-[14px] py-4 border-t border-[#E7E5E0] first:border-t-0 first:pt-0 text-[15px] leading-[1.55] font-medium text-[#1C1917] transition-opacity duration-150"
-                :data-id="`a${itemIndex}`">
-                <div class="flex-1 min-w-0">
-                    <div class="flex flex-row justify-between">
-                        <span class="block">{{ item.action }}</span>
+    <div
+        class="action-list-scroll"
+        :class="{ 'scrollable': data.actionItems.length > 3 }"
+        :style="data.actionItems.length > 3 && scrollHeight ? { maxHeight: scrollHeight + 'px' } : {}"
+    >
+        <ul class="list-none" id="action-list" aria-label="Action items" ref="listRef">
+            <template v-for="(item, itemIndex) in data.actionItems" :key="itemIndex">
+                <li
+                    class="action-item flex items-start gap-[14px] py-4 border-b border-[#A8A29E] last:border-b-0 last:pb-0 text-[15px] leading-[1.55] font-medium text-[#1C1917] transition-opacity duration-150"
+                    :data-id="`a${itemIndex}`"
+                >
+                    <div class="flex-1 min-w-0">
+                        <div class="flex flex-row justify-between">
+                            <span class="block">{{ item.action }}</span>
 
-                        <!-- verify that all the talking points have been addressed before showing the 'Mark done' option -->
-                        <button 
-                            v-if="data.actionItems[itemIndex].talkingPoints.every(tp => tpResponses[tp.id] != null)" 
-                            class="h-3 mark-done-btn shrink-0 text-[11px] font-normal text-[#78716C] border-none bg-transparent cursor-pointer font-['DM_Sans',system-ui,sans-serif] py-[3px] px-0 whitespace-nowrap mt-[2px] hover:text-[#1C1917]"
-                            :aria-label="`Mark action item ${itemIndex + 1} as done`"
-                            @click="saveTalkingPointResponses(data.actionItems[itemIndex].id)"
+                            <button
+                                v-if="data.actionItems[itemIndex].talkingPoints.every(tp => tpResponses[tp.id] != null)"
+                                class="h-3 mark-done-btn shrink-0 text-[11px] font-normal text-[#78716C] border-none bg-transparent cursor-pointer font-['DM_Sans',system-ui,sans-serif] py-[3px] px-0 whitespace-nowrap mt-[2px] hover:text-[#1C1917]"
+                                :aria-label="`Mark action item ${itemIndex + 1} as done`"
+                                @click="saveTalkingPointResponses(data.actionItems[itemIndex].id)"
+                            >
+                                Mark done
+                            </button>
+                        </div>
+
+                        <button
+                            class="tp-btn inline-flex items-center gap-[5px] text-[11px] font-normal font-['DM_Sans',system-ui,sans-serif] text-[#78716C] border-none border-b border-[#A8A29E] bg-transparent cursor-pointer p-0 mt-[9px] tracking-[0.02em] transition-[color,border-color] duration-150 leading-[1.6] hover:text-[#1C1917]"
+                            :aria-expanded="state.openTP[itemIndex] ? 'true' : 'false'"
+                            :aria-controls="`tp-a${itemIndex}`"
+                            @click="toggleTP(item.id)"
                         >
-                            Mark done
+                            <svg class="inline-block w-[13px] h-[13px] shrink-0 opacity-[0.55]" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                <path d="M2 4h12v7a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" stroke="currentColor" stroke-width="1.3"></path>
+                                <path d="M5 2v2M11 2v2M5 9h6M5 11h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path>
+                            </svg>
+                            Talking points
                         </button>
-                    </div>
 
-                    <button
-                        class="tp-btn inline-flex items-center gap-[5px] text-[11px] font-normal font-['DM_Sans',system-ui,sans-serif] text-[#78716C] border-none border-b border-[#E7E5E0] bg-transparent cursor-pointer p-0 mt-[9px] tracking-[0.02em] transition-[color,border-color] duration-150 leading-[1.6] hover:text-[#1C1917]"
-                        :aria-expanded="state.openTP[itemIndex] ? 'true' : 'false'"
-                        :aria-controls="`tp-a${itemIndex}`"
-                        @click="toggleTP(item.id)"
-                    >
-                        <svg class="inline-block w-[13px] h-[13px] shrink-0 opacity-[0.55]" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                            <path d="M2 4h12v7a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" stroke="currentColor" stroke-width="1.3"></path>
-                            <path d="M5 2v2M11 2v2M5 9h6M5 11h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path>
-                        </svg>
+                        <template v-if="state.openTP[item.id]">
+                            <div
+                                class="tp-panel"
+                                :id="`tp-a${itemIndex}`"
+                                role="region"
+                                :aria-label="`Talking points for action item ${itemIndex + 1}`"
+                            >
+                                <div class="bg-[rgba(28,25,23,0.03)] border-l-2 border-[#A8A29E] rounded-r-[4px] p-[10px_12px]">
+                                    <div
+                                        v-for="tp in item.talkingPoints"
+                                        :key="tp.id"
+                                        class="tp-question-row flex flex-col gap-[6px] mb-2 last:mb-0"
+                                    >
+                                        <span class="tp-question-text text-[12px] text-[#78716C] leading-[1.55] font-normal">{{ tp.text }}</span>
 
-                        Talking points
-                    </button>
-
-                    <template v-if="state.openTP[item.id]">
-                        <div
-                            class="tp-panel"
-                            :class="{ open: state.openTP[itemIndex] }"
-                            :id="`tp-a${itemIndex}`"
-                            role="region"
-                            :aria-label="`Talking points for action item ${itemIndex + 1}`"
-                        >
-                            <div class="bg-[rgba(28,25,23,0.03)] border-l-2 border-[#E7E5E0] rounded-r-[4px] p-[10px_12px]">
-                                <div
-                                    v-for="tp in item.talkingPoints"
-                                    :key="tp.id"
-                                    class="tp-question-row flex flex-col gap-[6px] mb-2 last:mb-0"
-                                >
-                                    <span class="tp-question-text text-[12px] text-[#78716C] leading-[1.55] font-normal">{{ tp.text }}</span>
-                                    
-                                    <div class="flex flex-wrap gap-[5px] pl-[14px]">
-                                        <button
-                                            v-for="chip in TP_CHIPS"
-                                            :key="chip.type"
-                                            class="tp-chip text-[10px] font-normal font-['DM_Sans',system-ui,sans-serif] py-[3px] px-[9px] border border-[#E7E5E0] rounded-[20px] cursor-pointer transition-[border-color,color,background] duration-[140ms] leading-[1.4] hover:border-[#78716C] hover:text-[#1C1917]"
-                                            :class="{
-                                                'selected': tpResponses[tp.id] === chip.type
-                                            }"
-                                            @click="selectTPChip(tp.id, chip.type)"
-                                        >
-                                            {{ chip.label }}
-                                        </button>
+                                        <div class="flex flex-wrap gap-[5px] pl-[14px]">
+                                            <button
+                                                v-for="chip in TP_CHIPS"
+                                                :key="chip.type"
+                                                class="tp-chip text-[10px] font-normal font-['DM_Sans',system-ui,sans-serif] py-[3px] px-[9px] border border-[#A8A29E] rounded-[20px] cursor-pointer transition-[border-color,color,background] duration-[140ms] leading-[1.4] hover:border-[#78716C] hover:text-[#1C1917]"
+                                                :class="{ 'selected': tpResponses[tp.id] === chip.type }"
+                                                @click="selectTPChip(tp.id, chip.type)"
+                                            >
+                                                {{ chip.label }}
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </template>
-                </div>
-            </li>
-        </template>
-    </ul>
+                        </template>
+                    </div>
+                </li>
+            </template>
+        </ul>
+    </div>
 </template>
 
 <style scoped>
@@ -189,5 +192,31 @@
         background-color: #1C1917;
         color: #F7F5F1;
         border-color: #1C1917;
+    }
+
+    .action-list-scroll {
+        scrollbar-width: thin;
+        scrollbar-color: #E7E5E0 transparent;
+    }
+
+    .action-list-scroll::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .action-list-scroll::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .action-list-scroll::-webkit-scrollbar-thumb {
+        background-color: #E7E5E0;
+        border-radius: 999px;
+    }
+
+    .action-list-scroll::-webkit-scrollbar-thumb:hover {
+        background-color: #A8A29E;
+    }
+
+    .action-list-scroll.scrollable {
+        overflow-y: auto;
     }
 </style>
