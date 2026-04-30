@@ -1,7 +1,8 @@
 <script setup lang="ts">
   import Activity from './components/activity-chart/Activity.vue';
   import Perfomance from './components/performance/Perfomance.vue';
-  import Suggestions from "./components/practice-suggestions/Suggestions.vue"
+  import Suggestions from "./components/practice-suggestions/Suggestions.vue";
+  import LessonProgress from './components/progress/LessonProgress.vue';
 </script>
 
 <template>
@@ -16,8 +17,14 @@
         <Todos />
     </div>
 
-    <div class="pt-8 sm:pt-12 pl-0 sm:pl-10 pb-8 sm:pb-[60px]">
+    <div class="pt-8 sm:pt-12 pl-0 sm:pl-10 sm:pb-[60px]">
       <Perfomance />
+
+      <hr class="border-none border-t border-[#E7E5E0] my-[22px]">
+
+      <LessonProgress />
+
+      <hr class="border-none border-t border-[#E7E5E0] my-[22px]">
     </div>
   </div>
 
