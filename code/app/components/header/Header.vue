@@ -27,7 +27,7 @@
 
         <div class="relative" id="switcher-wrap">
             <button
-                class="switcher-trigger flex items-center gap-[10px] py-[6px] pr-[14px] pl-[8px] border border-[#E7E5E0] rounded-[40px] cursor-pointer transition-[border-color] duration-[180ms] bg-[#F7F5F1] font-sans text-base hover:border-[#B45309]"
+                class="switcher-trigger flex items-center gap-[10px] py-[6px] pr-[14px] pl-[8px] border border-[#A8A29E] rounded-[40px] cursor-pointer transition-[border-color] duration-[180ms] bg-[#F7F5F1] font-sans text-base hover:border-[#B45309]"
                 @click="showDropDown = !showDropDown"
                 id="switcher-trigger"
                 aria-haspopup="listbox"

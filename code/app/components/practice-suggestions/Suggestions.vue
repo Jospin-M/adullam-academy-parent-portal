@@ -1,9 +1,9 @@
 <script setup>
-    import { reactive } from 'vue';
+    import { reactive, ref, onMounted } from 'vue';
 
     const TP_CHIPS = [
         { type: 'answered-well', label: 'Answered well' },
-        { type: 'struggled',     label: 'Struggled'     },
+        { type: 'struggled',     label: 'Struggled' },
     ];
 
     const suggestions = reactive([
@@ -65,24 +65,39 @@
         Object.fromEntries(suggestions.flatMap(s => s.talkingPoints.map(tp => [tp.id, null])))
     );
 
+    const listRef = ref(null);
+    const scrollHeight = ref(null);
+
+    onMounted(() => {
+        if (!listRef.value || suggestions.length <= 3) return;
+
+        let height = 0;
+        const items = listRef.value.querySelectorAll('.suggestion-item');
+
+        for (let i = 0; i < 3 && i < items.length; i++) {
+            height += items[i].getBoundingClientRect().height;
+        }
+
+        scrollHeight.value = height;
+    });
+
     function allAnswered(suggestion) {
         return suggestion.talkingPoints.every(tp => tpResponses[tp.id] !== null);
-    };
+    }
 
     function selectTPChip(tpId, chipType) {
         tpResponses[tpId] = tpResponses[tpId] === chipType ? null : chipType;
-    };
+    }
 
     function saveSuggestionResponses(suggestionId) {
-        const suggestion = suggestions.find(s => s.id === suggestionId)
+        const suggestion = suggestions.find(s => s.id === suggestionId);
         suggestion.talkingPoints.forEach(tp => {
-            // these requests can be queued, then we do a bulk write
             console.log('saving talking point response', { id: tp.id, response: tpResponses[tp.id] });
-        })
+        });
 
         const index = suggestions.findIndex(s => s.id === suggestionId);
         suggestions.splice(index, 1);
-    };
+    }
 </script>
 
 <template>
@@ -90,77 +105,84 @@
         <div class="text-[11px] font-medium tracking-[0.09em] uppercase text-[#78716C] mb-4">Practice suggestions</div>
 
         <div
-            v-for="suggestion in suggestions"
-            :key="suggestion.id"
-            class="suggestion-item flex flex-col gap-[10px] py-4 border-t border-[#E7E5E0] first-of-type:border-t-0 first-of-type:pt-0"
+            class="suggestions-scroll"
+            :class="{ 'scrollable': suggestions.length > 3 }"
+            :style="suggestions.length > 3 && scrollHeight ? { maxHeight: scrollHeight + 'px' } : {}"
+            ref="listRef"
         >
-            <!-- Top row: text + go to lesson -->
-            <div class="flex items-start justify-between gap-5 max-[700px]:flex-col max-[700px]:gap-[6px]">
-                <p class="text-[13px] text-[#1C1917] leading-[1.55] flex-1 min-w-0">
-                    <strong>{{ suggestion.title }}.</strong> {{ suggestion.description }}
-                </p>
-                
-                <a
-                    class="text-[12px] text-[#78716C] no-underline border-b border-[#E7E5E0] whitespace-nowrap cursor-pointer shrink-0 transition-[color,border-color] duration-150 hover:text-[#B45309] hover:border-b-[#B45309]"
-                    :href="suggestion.lessonUrl"
-                    tabindex="0"
-                >Go to lesson →</a>
-            </div>
-
-            <!-- Talking points toggle -->
-            <button
-                class="tp-btn self-start inline-flex items-center gap-[5px] text-[11px] font-normal font-['DM_Sans',system-ui,sans-serif] text-[#78716C] border-none border-b border-[#E7E5E0] bg-transparent cursor-pointer p-0 tracking-[0.02em] transition-[color,border-color] duration-150 leading-[1.6] hover:text-[#1C1917] hover:border-b-text-secondary"
-                :aria-expanded="state.openTP[suggestion.id]"
-                :aria-controls="`tp-${suggestion.id}`"
-                @click="state.openTP[suggestion.id] = !state.openTP[suggestion.id]"
+            <div
+                v-for="suggestion in suggestions"
+                :key="suggestion.id"
+                class="suggestion-item flex flex-col gap-[10px] py-4 border-t border-[#E7E5E0] first-of-type:border-t-0 first-of-type:pt-0"
             >
-                <svg class="inline-block w-[13px] h-[13px] shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="opacity: 0.55;">
-                    <path d="M2 4h12v7a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" stroke="currentColor" stroke-width="1.3"></path>
-                    <path d="M5 2v2M11 2v2M5 9h6M5 11h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path>
-                </svg>
-                Talking points
-            </button>
+                <!-- Top row: text + go to lesson -->
+                <div class="flex items-start justify-between gap-5 max-[700px]:flex-col max-[700px]:gap-[6px]">
+                    <p class="text-[13px] text-[#1C1917] leading-[1.55] flex-1 min-w-0">
+                        <strong>{{ suggestion.title }}.</strong> {{ suggestion.description }}
+                    </p>
 
-            <!-- TP panel + mark done — full width -->
-            <template v-if="state.openTP[suggestion.id]">
-                <div
-                    class="tp-panel open w-full"
-                    :id="`tp-${suggestion.id}`"
-                    role="region"
-                    :aria-label="`Talking points for ${suggestion.title}`"
+                    <a
+                        class="text-[12px] text-[#78716C] no-underline border-b border-[#E7E5E0] whitespace-nowrap cursor-pointer shrink-0 transition-[color,border-color] duration-150 hover:text-[#B45309] hover:border-b-[#B45309]"
+                        :href="suggestion.lessonUrl"
+                        tabindex="0"
+                    >Go to lesson →</a>
+                </div>
+
+                <!-- Talking points toggle -->
+                <button
+                    class="tp-btn self-start inline-flex items-center gap-[5px] text-[11px] font-normal font-['DM_Sans',system-ui,sans-serif] text-[#78716C] border-none border-b border-[#E7E5E0] bg-transparent cursor-pointer p-0 tracking-[0.02em] transition-[color,border-color] duration-150 leading-[1.6] hover:text-[#1C1917]"
+                    :aria-expanded="state.openTP[suggestion.id]"
+                    :aria-controls="`tp-${suggestion.id}`"
+                    @click="state.openTP[suggestion.id] = !state.openTP[suggestion.id]"
                 >
-                    <div class="bg-[rgba(28,25,23,0.03)] border-l-2 border-[#E7E5E0] rounded-r-[4px] p-[10px_12px]">
-                        <div
-                            v-for="tp in suggestion.talkingPoints"
-                            :key="tp.id"
-                            class="tp-question-row flex flex-col gap-[6px] mb-2 last:mb-0"
-                        >
-                            <span class="tp-question-text text-[12px] text-[#78716C] leading-[1.55] font-normal" v-html="tp.text"></span>
+                    <svg class="inline-block w-[13px] h-[13px] shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="opacity: 0.55;">
+                        <path d="M2 4h12v7a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" stroke="currentColor" stroke-width="1.3"></path>
+                        <path d="M5 2v2M11 2v2M5 9h6M5 11h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path>
+                    </svg>
+                    Talking points
+                </button>
 
-                            <div class="flex flex-wrap gap-[5px] pl-[14px]">
-                                <button
-                                    v-for="chip in TP_CHIPS"
-                                    :key="chip.type"
-                                    class="tp-chip text-[10px] font-normal font-['DM_Sans',system-ui,sans-serif] py-[3px] px-[9px] border border-[#E7E5E0] rounded-[20px] cursor-pointer transition-[border-color,color,background] duration-[140ms] leading-[1.4] hover:border-[#78716C] hover:text-[#1C1917]"
-                                    :class="{ 'selected': tpResponses[tp.id] === chip.type }"
-                                    @click="selectTPChip(tp.id, chip.type)"
-                                >
-                                    {{ chip.label }}
-                                </button>
+                <!-- TP panel + mark done — full width -->
+                <template v-if="state.openTP[suggestion.id]">
+                    <div
+                        class="tp-panel open w-full"
+                        :id="`tp-${suggestion.id}`"
+                        role="region"
+                        :aria-label="`Talking points for ${suggestion.title}`"
+                    >
+                        <div class="bg-[rgba(28,25,23,0.03)] border-l-2 border-[#E7E5E0] rounded-r-[4px] p-[10px_12px]">
+                            <div
+                                v-for="tp in suggestion.talkingPoints"
+                                :key="tp.id"
+                                class="tp-question-row flex flex-col gap-[6px] mb-2 last:mb-0"
+                            >
+                                <span class="tp-question-text text-[12px] text-[#78716C] leading-[1.55] font-normal" v-html="tp.text"></span>
+
+                                <div class="flex flex-wrap gap-[5px] pl-[14px]">
+                                    <button
+                                        v-for="chip in TP_CHIPS"
+                                        :key="chip.type"
+                                        class="tp-chip text-[10px] font-normal font-['DM_Sans',system-ui,sans-serif] py-[3px] px-[9px] border border-[#E7E5E0] rounded-[20px] cursor-pointer transition-[border-color,color,background] duration-[140ms] leading-[1.4] hover:border-[#78716C] hover:text-[#1C1917]"
+                                        :class="{ 'selected': tpResponses[tp.id] === chip.type }"
+                                        @click="selectTPChip(tp.id, chip.type)"
+                                    >
+                                        {{ chip.label }}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <button
-                    v-if="allAnswered(suggestion)"
-                    class="mark-done-btn w-full text-[11px] font-normal text-[#78716C] border border-[#E7E5E0] rounded-[4px] bg-transparent cursor-pointer font-['DM_Sans',system-ui,sans-serif] py-[6px] px-0 whitespace-nowrap transition-[color,border-color] duration-150 hover:text-[#1C1917] hover:border-[#78716C]"
-                    :aria-label="`Mark ${suggestion.title} as done`"
-                    @click="saveSuggestionResponses(suggestion.id)"
-                >
-                    Mark done
-                </button>
-            </template>
+                    <button
+                        v-if="allAnswered(suggestion)"
+                        class="mark-done-btn w-full text-[11px] font-normal text-[#78716C] border border-[#E7E5E0] rounded-[4px] bg-transparent cursor-pointer font-['DM_Sans',system-ui,sans-serif] py-[6px] px-0 whitespace-nowrap transition-[color,border-color] duration-150 hover:text-[#1C1917] hover:border-[#78716C]"
+                        :aria-label="`Mark ${suggestion.title} as done`"
+                        @click="saveSuggestionResponses(suggestion.id)"
+                    >
+                        Mark done
+                    </button>
+                </template>
+            </div>
         </div>
     </div>
 </template>
@@ -170,5 +192,31 @@
         background-color: #1C1917;
         color: #F7F5F1;
         border-color: #1C1917;
+    }
+
+    .suggestions-scroll {
+        scrollbar-width: thin;
+        scrollbar-color: #E7E5E0 transparent;
+    }
+
+    .suggestions-scroll::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .suggestions-scroll::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .suggestions-scroll::-webkit-scrollbar-thumb {
+        background-color: #E7E5E0;
+        border-radius: 999px;
+    }
+
+    .suggestions-scroll::-webkit-scrollbar-thumb:hover {
+        background-color: #A8A29E;
+    }
+
+    .suggestions-scroll.scrollable {
+        overflow-y: auto;
     }
 </style>
