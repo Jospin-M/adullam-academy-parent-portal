@@ -91,6 +91,7 @@
     function saveTalkingPointResponses(actionItemId) {
         const action = data.actionItems.find(action => action.id === actionItemId);
         action.talkingPoints.forEach(tp => {
+            // these requests can be queued, then we do a bulk write
             console.log("sending request to save talking point", { id: tp.id, response: tpResponses[tp.id] })
         });
 
