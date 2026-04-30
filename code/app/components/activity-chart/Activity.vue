@@ -244,7 +244,7 @@
           @click="setRange('7d')"
           :aria-pressed="activeRange === '7d'"
         >
-          7 days
+          Last 7 days
         </button>
         <button
           class="text-[12px] font-medium font-['DM_Sans',system-ui,sans-serif] py-[5px] px-[14px] border-none cursor-pointer transition-[background,color] duration-[140ms]"
@@ -256,7 +256,7 @@
           @click="setRange('30d')"
           :aria-pressed="activeRange === '30d'"
         >
-          30 days
+          Last 30 days
         </button>
       </div>
     </div>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import Activity from './components/activity-chart/Activity.vue';
+  import Suggestions from "./components/practice-suggestions/Suggestions.vue"
 
 </script>
 
@@ -18,5 +19,6 @@
 
   <div class="max-w-[1200px] mx-auto px-5 sm:px-10">
     <Activity />
+    <Suggestions />
   </div>
 </template>
