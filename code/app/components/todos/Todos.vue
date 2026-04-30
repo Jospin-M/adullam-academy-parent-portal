@@ -52,7 +52,7 @@
 <template>
     <div class="flex items-baseline justify-between mb-[14px] gap-3">
         <p class="text-[15px] font-medium" id="todo-summary">
-            {{ todos.filter(todo => todo.complete == true).length }} of {{ todos.length }} to-dos complete this week
+            {{ todos.filter(todo => todo.complete == true).length }} of {{ todos.length }} to-dos complete
         </p>
     </div>
 

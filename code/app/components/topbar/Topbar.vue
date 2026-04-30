@@ -63,16 +63,15 @@
                 <li v-for="(child, index) in children" :key="index">
                     <button
                         class="dd-child-btn flex items-center gap-[10px] w-full px-4 py-2 bg-transparent border-none cursor-pointer font-sans text-left transition-[background] duration-[120ms] hover:bg-[rgba(28,25,23,0.04)]"
-                        :class="{ active: index === activeChildIndex }"
                         :id="`dd-child-${index}`"
-                        @click="activeChildIndex = index; showDropDown = false"
+                        @click="showDropDown = false"
                         :aria-label="`View ${child.name}'s dashboard`"
                     >
                         <div class="dd-child-avatar w-[26px] h-[26px] rounded-full bg-[rgba(28,25,23,0.12)] text-[#1C1917] flex items-center justify-center text-[10px] font-medium shrink-0 font-sans transition-[background,color] duration-150" aria-hidden="true">{{ childrenInitials[index] }}</div>
                         <div class="flex-1 min-w-0">
                             <div class="text-[13px] font-medium text-[#1C1917] leading-[1.2]">{{ child.name }}</div>
                         </div>
-                        <svg class="dd-check w-[14px] h-[14px] shrink-0 transition-opacity duration-150 text-[#78716C]" :class="index === activeChildIndex ? 'opacity-100' : 'opacity-0'" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                        <svg class="dd-check w-[14px] h-[14px] shrink-0 transition-opacity duration-150 text-[#78716C]"  viewBox="0 0 14 14" fill="none" aria-hidden="true">
                             <path d="M2.5 7l3.5 3.5 5.5-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
                     </button>

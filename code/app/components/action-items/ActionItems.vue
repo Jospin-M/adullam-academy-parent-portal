@@ -111,7 +111,19 @@
                 class="action-item flex items-start gap-[14px] py-4 border-t border-[#E7E5E0] first:border-t-0 first:pt-0 text-[15px] leading-[1.55] font-medium text-[#1C1917] transition-opacity duration-150"
                 :data-id="`a${itemIndex}`">
                 <div class="flex-1 min-w-0">
-                    <span class="block">{{ item.action }}</span>
+                    <div class="flex flex-row justify-between">
+                        <span class="block">{{ item.action }}</span>
+
+                        <!-- verify that all the talking points have been addressed before showing the 'Mark done' option -->
+                        <button 
+                            v-if="data.actionItems[itemIndex].talkingPoints.every(tp => tpResponses[tp.id] != null)" 
+                            class="h-3 mark-done-btn shrink-0 text-[11px] font-normal text-[#78716C] border-none bg-transparent cursor-pointer font-['DM_Sans',system-ui,sans-serif] py-[3px] px-0 whitespace-nowrap mt-[2px] hover:text-[#1C1917]"
+                            :aria-label="`Mark action item ${itemIndex + 1} as done`"
+                            @click="saveTalkingPointResponses(data.actionItems[itemIndex].id)"
+                        >
+                            Mark done
+                        </button>
+                    </div>
 
                     <button
                         class="tp-btn inline-flex items-center gap-[5px] text-[11px] font-normal font-['DM_Sans',system-ui,sans-serif] text-[#78716C] border-none border-b border-[#E7E5E0] bg-transparent cursor-pointer p-0 mt-[9px] tracking-[0.02em] transition-[color,border-color] duration-150 leading-[1.6] hover:text-[#1C1917]"
@@ -161,16 +173,6 @@
                         </div>
                     </template>
                 </div>
-
-                <!-- verify that all the talking points have been addressed before showing the 'Mark done' option -->
-                <button 
-                    v-if="data.actionItems[itemIndex].talkingPoints.every(tp => tpResponses[tp.id] != null)" 
-                    class="mark-done-btn shrink-0 text-[11px] font-normal text-[#78716C] border-none bg-transparent cursor-pointer font-['DM_Sans',system-ui,sans-serif] py-[3px] px-0 whitespace-nowrap mt-[2px] hover:text-[#1C1917]"
-                    :aria-label="`Mark action item ${itemIndex + 1} as done`"
-                    @click="saveTalkingPointResponses(data.actionItems[itemIndex].id)"
-                >
-                    Mark done
-                </button>
             </li>
         </template>
     </ul>

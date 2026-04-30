@@ -1,3 +1,8 @@
+<script setup lang="ts">
+  import Activity from './components/activity-chart/Activity.vue';
+
+</script>
+
 <template>
   <Topbar />
     
@@ -9,5 +14,9 @@
 
         <Todos />
     </div>
+  </div>
+
+  <div class="max-w-[1200px] mx-auto px-5 sm:px-10">
+    <Activity />
   </div>
 </template>
