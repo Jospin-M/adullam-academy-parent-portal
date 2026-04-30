@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import Activity from './components/activity-chart/Activity.vue';
+  import Perfomance from './components/performance/Perfomance.vue';
   import Suggestions from "./components/practice-suggestions/Suggestions.vue"
-
 </script>
 
 <template>
@@ -17,7 +17,7 @@
     </div>
 
     <div class="pt-8 sm:pt-12 pl-0 sm:pl-10 pb-8 sm:pb-[60px]">
-      hello
+      <Perfomance />
     </div>
   </div>
 

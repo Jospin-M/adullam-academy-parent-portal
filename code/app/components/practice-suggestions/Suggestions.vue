@@ -9,6 +9,7 @@
     const suggestions = reactive([
         {
             id: 's1',
+            userId: "abc",
             title: 'Python Functions',
             description: 'Elijah scored below 50% on his last two attempts here. This concept underpins most of the coming weeks — worth revisiting now before the work compounds.',
             lessonUrl: '#',
@@ -20,6 +21,7 @@
         },
         {
             id: 's2',
+            userId: "abc",
             title: 'Loops & Iteration',
             description: 'Elijah skipped two loop-based exercises last week without attempting them. A quick check-in here would help surface whether this is a confidence issue or a gap in understanding.',
             lessonUrl: '#',
@@ -31,6 +33,7 @@
         },
         {
             id: 's3',
+            userId: "abc",
             title: 'Lists & Indexing',
             description: 'Elijah made consistent indexing errors across his last assignment. This is a quick concept to reinforce and will come up heavily in the data structures unit ahead.',
             lessonUrl: '#',
@@ -42,6 +45,7 @@
         },
         {
             id: 's4',
+            userId: "abc",
             title: 'Conditionals & Boolean Logic',
             description: 'Quiz results show Elijah is mixing up <code>and</code> and <code>or</code> operators in compound conditions. A short conversation here could prevent this from becoming a persistent habit.',
             lessonUrl: '#',

@@ -6,15 +6,17 @@
         actionItems: [
             {
                 id: "1",
+                userId: "abc",
                 action: "Coding challenge pass rate has dropped to 47% — below the alert threshold. Review the Python Functions lesson with Elijah before his next assignment.",
                 talkingPoints: [
                     { id: "tp-1-1", text: "Can you explain what a function actually does, in your own words?", actionId: 1 },
                     { id: "tp-1-2", text: "What is the difference between a parameter and an argument?", actionId: 1 },
                     { id: "tp-1-3", text: "What happens to the rest of the program while a function is running?", actionId: 1 }
-                ]
+                ],
             },
             {
                 id: "2",
+                userId: "abc",
                 action: "Two to-dos are now overdue by more than three days. Completing them this week will prevent them from appearing on the term report.",
                 talkingPoints: [
                     { id: "tp-2-1", text: "Which of the two tasks feels more manageable right now — can we start there?", actionId: 2 },
@@ -24,6 +26,7 @@
             },
             {
                 id: "3",
+                userId: "abc",
                 action: "Quiz average is at 78% — just below the 80% threshold. A short review of Week 12 concepts would bring this back on track before the next assessment.",
                 talkingPoints: [
                     { id: "tp-3-1", text: "Which question from your last quiz felt the trickiest? Do you still remember why?", actionId: 3 },
@@ -33,6 +36,7 @@
             },
             {
                 id: "4",
+                userId: "abc",
                 action: "Elijah has completed 18 of 24 lessons and is on pace to finish the term by Week 22 — two weeks ahead of schedule.",
                 talkingPoints: [
                     { id: "tp-4-1", text: "What has been your favourite lesson in this course so far?", actionId: 4 },
