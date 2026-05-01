@@ -1,5 +1,5 @@
 <script setup>
-    import { reactive, ref, onMounted } from 'vue';
+    import { reactive, ref, onMounted, computed } from 'vue';
 
     const TP_CHIPS = [
         { type: 'answered-well', label: 'Answered well' },
@@ -68,6 +68,8 @@
     const listRef = ref(null);
     const scrollHeight = ref(null);
 
+    const isEmpty = computed(() => suggestions.length === 0);
+
     onMounted(() => {
         if (!listRef.value || suggestions.length <= 3) return;
 
@@ -104,7 +106,24 @@
     <div class="pt-9 pb-12">
         <div class="text-[11px] font-medium tracking-[0.09em] uppercase text-[#78716C] mb-4">Practice suggestions</div>
 
+        <!-- Empty state -->
+        <div v-if="isEmpty" class="py-8 flex flex-col items-center text-center gap-3 w-full">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style="background: rgba(28,25,23,0.05);">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                    <circle cx="9" cy="9" r="6" stroke="#78716C" stroke-width="1.4"/>
+                    <circle cx="9" cy="9" r="1.5" fill="#78716C"/>
+                    <path d="M9 2v2M9 14v2M2 9h2M14 9h2" stroke="#78716C" stroke-width="1.3" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <p class="font-['Lora',Georgia,serif] text-[17px] font-normal text-[#1C1917] leading-[1.35]">No suggestions yet</p>
+            <p class="text-[13px] text-[#78716C] leading-[1.6] max-w-[300px]">
+                Practice suggestions appear once a few lessons or quizzes have been completed. They're personalised to areas where a bit of extra review would help most.
+            </p>
+        </div>
+
+        <!-- List -->
         <div
+            v-else
             class="suggestions-scroll"
             :class="{ 'scrollable': suggestions.length > 3 }"
             :style="suggestions.length > 3 && scrollHeight ? { maxHeight: scrollHeight + 'px' } : {}"
