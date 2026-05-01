@@ -1,8 +1,8 @@
 <script setup>
-  import { ref, computed, watch } from "vue";
-  import VueApexCharts from "vue3-apexcharts";
+    import { ref, computed, watch } from "vue";
+    import VueApexCharts from "vue3-apexcharts";
 
-  const activityData = {
+    const activityData = {
       "2026-04-01": { quizzes: 2, lessons: 3, challenges: 1 },
       "2026-04-02": { quizzes: 4, lessons: 5, challenges: 2 },
       "2026-04-03": { quizzes: 1, lessons: 2, challenges: 0 },
@@ -33,16 +33,20 @@
       "2026-04-28": { quizzes: 2, lessons: 3, challenges: 1 },
       "2026-04-29": { quizzes: 5, lessons: 6, challenges: 3 },
       "2026-04-30": { quizzes: 3, lessons: 4, challenges: 2 },
-  };
+    };
 
-  function toKey(date) {
-      return date.toISOString().slice(0, 10);
-  }
+    function toKey(date) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
 
-  function totalInteractions(entry) {
-      if (!entry) return 0;
-      return entry.quizzes + entry.lessons + entry.challenges;
-  }
+    function totalInteractions(entry) {
+        if (!entry) return 0;
+        
+        return entry.quizzes + entry.lessons + entry.challenges;
+    }
 
   const activeRange = ref("7d");
 
