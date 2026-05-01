@@ -32,7 +32,7 @@
             aria-controls="week-expand"
             @click="showWeeks = !showWeeks"
         >
-            Show per-week breakdown {{ showWeeks ? '▴' : '▾' }}
+            {{ !showWeeks ? 'Show' : 'Hide' }} per-week breakdown {{ showWeeks ? '▴' : '▾' }}
         </div>
 
         <div
