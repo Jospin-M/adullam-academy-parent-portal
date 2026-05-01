@@ -1,5 +1,5 @@
 <script setup>
-    import { reactive, ref, onMounted } from 'vue';
+    import { reactive, ref, onMounted, computed } from 'vue';
 
     const data = reactive({
         insight: "Elijah has two things that need your attention this week.",
@@ -50,7 +50,6 @@
     const state = reactive({
         openTP: data.actionItems.reduce((acc, action) => {
             acc[action.id] = false;
-
             return acc;
         }, {})
     });
@@ -60,7 +59,6 @@
             data.actionItems[itemIndex].talkingPoints.forEach((tp) => {
                 acc[tp.id] = null;
             });
-
             return acc;
         }, {})
     );
@@ -72,6 +70,8 @@
 
     const listRef = ref(null)
     const scrollHeight = ref(null)
+
+    const isEmpty = computed(() => data.actionItems.length === 0);
 
     onMounted(() => {
         if (!listRef.value || data.actionItems.length <= 3) return;
@@ -111,7 +111,22 @@
 
     <div class="text-[11px] font-medium tracking-[0.09em] uppercase text-[#78716C] mb-4" id="action-label">Action items</div>
 
+    <!-- Empty state -->
+    <div v-if="isEmpty" class="empty-state py-8 flex flex-col items-center text-center gap-3">
+        <div class="empty-icon w-10 h-10 rounded-full flex items-center justify-center" style="background: rgba(45,106,79,0.09);">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <path d="M3.5 9l3.5 3.5 7-7" stroke="#2D6A4F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <p class="font-['Lora',Georgia,serif] text-[17px] font-normal text-[#1C1917] leading-[1.35]">All clear this week</p>
+        <p class="text-[13px] text-[#78716C] leading-[1.6] max-w-[300px]">
+            There are no action items right now. Things like milestones, overdue tasks, and overall performance will surface here when they need your attention.
+        </p>
+    </div>
+
+    <!-- List -->
     <div
+        v-else
         class="action-list-scroll"
         :class="{ 'scrollable': data.actionItems.length > 3 }"
         :style="data.actionItems.length > 3 && scrollHeight ? { maxHeight: scrollHeight + 'px' } : {}"
@@ -218,5 +233,9 @@
 
     .action-list-scroll.scrollable {
         overflow-y: auto;
+    }
+
+    .empty-state {
+        width: 100%;
     }
 </style>

@@ -15,6 +15,7 @@
     "tailwindcss": "^4.2.4",
     "vue": "^3.5.33",
     "vue-radial-progress": "^0.3.2",
-    "vue-router": "^5.0.6"
+    "vue-router": "^5.0.6",
+    "vue3-apexcharts": "^1.11.1"
   }
 }
