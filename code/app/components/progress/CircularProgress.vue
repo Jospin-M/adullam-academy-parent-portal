@@ -6,50 +6,65 @@
         total:     { type: Number, required: true },
     });
 
-    const size        = 80;
+    const size        = 84;
     const strokeWidth = 5;
-    const radius      = (size - strokeWidth) / 2;
+    const radius      = 32;
     const circumference = 2 * Math.PI * radius;
 
-    const percentage = computed(() => (props.completed / props.total) * 100);
     const progress = computed(() => circumference - (props.completed / props.total) * circumference);
-
-    const color = computed(() =>
-        percentage.value >= 70 ? '#4A7C59'
-        : percentage.value >= 40 ? '#D97706'
-        :                           '#DC2626'
-    );
 </script>
 
 <template>
-    <div class="relative inline-flex items-center justify-center" :style="{ width: size + 'px', height: size + 'px' }">
-        <svg :width="size" :height="size" class="absolute top-0 left-0 -rotate-90">
-            <circle
-                :cx="size / 2"
-                :cy="size / 2"
-                :r="radius"
-                fill="none"
-                stroke="#E7E5E0"
-                :stroke-width="strokeWidth"
-            />
-            
-            <circle
-                :cx="size / 2"
-                :cy="size / 2"
-                :r="radius"
-                fill="none"
-                :stroke="color"
-                :stroke-width="strokeWidth"
-                stroke-linecap="round"
-                :stroke-dasharray="circumference"
-                :stroke-dashoffset="progress"
-                class="transition-[stroke-dashoffset,stroke] duration-500"
-            />
-        </svg>
+    <svg :width="size" :height="size" :viewBox="`0 0 ${size} ${size}`" role="img" :aria-label="`${completed} of ${total} lessons complete`">
+        <!-- Track -->
+        <circle
+            class="ring-track"
+            :cx="size / 2"
+            :cy="size / 2"
+            :r="radius"
+        />
 
-        <div class="flex flex-col items-center justify-center leading-none z-10">
-            <span class="text-[15px] font-medium text-[#1C1917]">{{ completed }}</span>
-            <span class="text-[10px] text-[#78716C]">of {{ total }}</span>
-        </div>
-    </div>
+        <!-- Fill -->
+        <circle
+            class="ring-fill"
+            :cx="size / 2"
+            :cy="size / 2"
+            :r="radius"
+            :stroke-dasharray="circumference"
+            :stroke-dashoffset="progress"
+        />
+
+        <!-- Center text -->
+        <text class="ring-center-num" :x="size / 2" :y="(size / 2) - 4" text-anchor="middle" dominant-baseline="middle">{{ completed }}</text>
+        <text class="ring-center-denom" :x="size / 2" :y="(size / 2) + 10" text-anchor="middle">of {{ total }}</text>
+    </svg>
 </template>
+
+<style scoped>
+    .ring-track {
+        fill: none;
+        stroke: var(--surface-container-high);
+        stroke-width: 5;
+    }
+    .ring-fill {
+        fill: none;
+        stroke: var(--electric-500);
+        stroke-width: 5;
+        stroke-linecap: round;
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+        transition: stroke-dashoffset 1.1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .ring-center-num {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 17px;
+        fill: var(--navy-900);
+        font-weight: 700;
+    }
+    .ring-center-denom {
+        font-family: 'Inter', sans-serif;
+        font-size: 9px;
+        fill: var(--text-muted);
+        font-weight: 400;
+    }
+</style>

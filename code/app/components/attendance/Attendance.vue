@@ -1,5 +1,5 @@
 <script setup>
-    import { ref } from 'vue';
+    import { ref, computed } from 'vue';
     import Legend from './Legend.vue';
 
     const CLASS_INDICES = [0, 6];
@@ -15,11 +15,11 @@
             },
             {
                 startDate: '6 Oct',
-                days: ['present', null, 'absent', 'present', 'present', 'present', 'present'],
+                days: ['present', null, null, 'present', 'present', 'present', 'present'],
             },
             {
                 startDate: '13 Oct',
-                days: ['present', null, 'present', 'present', 'absent', 'present', 'present'],
+                days: ['present', null, 'present', 'present', null, 'present', 'present'],
             },
             {
                 startDate: '20 Oct',
@@ -34,61 +34,84 @@
     const presentClassDays = attendance.weeks.reduce((sum, week) =>
         sum + CLASS_INDICES.filter(i => week.days[i] === 'present').length, 0);
 
-    const absentClassDays = totalClassDays - presentClassDays
+    const absentClassDays = totalClassDays - presentClassDays;
+
     const attendancePercent = totalClassDays > 0
         ? Math.round((presentClassDays / totalClassDays) * 100)
         : 0;
+
     const absencesSummary = `${absentClassDays} absence${absentClassDays !== 1 ? 's' : ''} this term`;
+
+    const percentColor = computed(() =>
+        attendancePercent >= 90 ? 'var(--success)' : 'var(--alert)'
+    );
 
     const showLog = ref(false);
 
     function dotClass(status, dayIndex) {
         const type = DAY_TYPES[dayIndex];
 
-        if (status === 'present') return 'bg-[#1C1917] opacity-[0.55]';
-        if (status === 'absent')  return type === 'inclass' ? 'bg-[#DC2626]' : 'bg-[#D97706]';
-        
-        return 'border-[1.5px] border-[#57534E ] opacity-25';
+        if (status === 'present') {
+            return type === 'help'
+                ? 'attendance-dot-present-help'
+                : 'attendance-dot-present-class';
+        }
+
+        if (status === 'absent') {
+            return type === 'inclass'
+                ? 'attendance-dot-absent-class'
+                : 'attendance-dot-absent-help';
+        }
+
+        return 'attendance-dot-none';
     }
 </script>
 
 <template>
-    <div class="mb-[6px]">
-        <div class="flex items-center justify-between pb-3 border-b border-[#E7E5E0] mb-4">
-            <span class="text-[11px] font-medium tracking-[0.09em] uppercase text-[#78716C]">Attendance</span>
+    <div class="card p-6">
+        <div class="text-[11px] font-semibold tracking-[0.1em] uppercase mb-5 body-text" style="color: var(--text-muted);">
+            Attendance
         </div>
 
-        <div class="flex items-center justify-between mb-[2px]">
-            <span class="font-['Lora',Georgia,serif] text-[22px] font-normal text-[#2D6A4F]">{{ attendancePercent }}%</span>
+        <div class="flex items-center justify-between mb-[6px]">
+            <span
+                class="headline text-[30px] font-bold leading-none"
+                :style="{ color: percentColor }"
+                :aria-label="`Attendance: ${attendancePercent} percent`"
+            >
+                {{ attendancePercent }}%
+            </span>
 
-            <div
-                class="text-[12px] text-[#78716C] cursor-pointer border-b border-[#E7E5E0] inline-block mt-[2px] transition-[color] duration-150 font-['DM_Sans',system-ui,sans-serif] hover:text-[#1C1917]"
+            <button
+                class="text-[12px] body-text cursor-pointer inline-block transition-[color] duration-150 bg-transparent border-none p-0 font-normal"
+                style="color: var(--text-muted);"
                 :aria-expanded="showLog"
                 aria-controls="attendance-log"
                 @click="showLog = !showLog"
             >
-                {{ showLog ? 'Hide attendance log ▴' : 'Show attendance log ▾' }}
-            </div>
+                {{ showLog ? 'Hide log ▴' : 'View log ▾' }}
+            </button>
         </div>
 
-        <div class="text-[11px] text-[#57534E ] opacity-60 mb-[6px]">
-            Based on in-class sessions only
-        </div>
-
-        <div class="text-[12px] text-[#78716C]">
-            {{ absencesSummary }}
+        <div class="text-[12px] body-text mb-3" style="color: var(--text-muted);">
+            {{ absencesSummary }} · based on in-class sessions only
         </div>
 
         <div
-            v-if="showLog"
-            class="attendance-log"
+            v-show="showLog"
+            class="attendance-log open"
             id="attendance-log"
             role="region"
             aria-label="Term attendance log"
         >
-            <div class="border-t border-[#E7E5E0] mt-[10px] pt-[14px]">
-                <div class="flex items-baseline justify-between mb-[10px]">
-                    <span class="text-[11px] font-medium tracking-[0.06em] uppercase text-[#78716C]">{{ attendance.label }}</span>
+            <div class="pt-[14px]" style="border-top: 1px solid rgba(69,71,76,0.10);">
+                <div class="flex items-baseline justify-between mb-[14px]">
+                    <span class="text-[11px] font-semibold tracking-[0.06em] uppercase body-text" style="color: var(--text-muted);">
+                        {{ attendance.label }}
+                    </span>
+                    <span class="text-[11px] body-text" style="color: var(--text-muted);">
+                        {{ absencesSummary }}
+                    </span>
                 </div>
 
                 <!-- Day headers -->
@@ -98,9 +121,12 @@
                         <span
                             v-for="(day, i) in DAYS"
                             :key="i"
-                            class="flex-1 text-[9px] font-normal text-center"
-                            :class="DAY_TYPES[i] === 'none' ? 'text-[#78716C] opacity-65' : 'text-[#78716C] '"
-                        >{{ day }}</span>
+                            class="flex-1 text-[9px] text-center body-text"
+                            :class="DAY_TYPES[i] === 'none' ? 'opacity-65' : ''"
+                            style="color: var(--text-muted);"
+                        >
+                            {{ day }}
+                        </span>
                     </div>
                 </div>
 
@@ -108,9 +134,12 @@
                 <div
                     v-for="week in attendance.weeks"
                     :key="week.startDate"
-                    class="att-week flex items-center gap-[10px] py-[5px] border-t border-[#E7E5E0]"
+                    class="att-week flex items-center gap-[10px] py-[6px] body-text text-[11px]"
+                    style="color: var(--text-muted); border-top: 1px solid rgba(69,71,76,0.08);"
                 >
-                    <span class="w-16 shrink-0 text-[11px] text-[#78716C]">{{ week.startDate }}</span>
+                    <span class="w-16 shrink-0 text-[11px]">
+                        {{ week.startDate }}
+                    </span>
 
                     <div class="flex flex-1 items-center">
                         <span
@@ -118,7 +147,10 @@
                             :key="i"
                             class="flex-1 flex justify-center"
                         >
-                            <span class="w-2 h-2 rounded-full shrink-0" :class="dotClass(status, i)"></span>
+                            <span
+                                class="w-2 h-2 rounded-full shrink-0"
+                                :class="dotClass(status, i)"
+                            ></span>
                         </span>
                     </div>
                 </div>
@@ -128,3 +160,37 @@
         </div>
     </div>
 </template>
+
+<style scoped>
+/* Present — in-class (primary signal) */
+.attendance-dot-present-class {
+    background: var(--navy-900);
+    opacity: 0.7;
+}
+
+/* Present — help session (secondary signal) */
+.attendance-dot-present-help {
+    background: var(--navy-900);
+    opacity: 0.25;
+    border: 1px solid rgba(15, 23, 42, 0.25);
+}
+
+/* Absent — in-class */
+.attendance-dot-absent-class {
+    background: transparent;
+    border: 1.5px solid var(--alert);
+}
+
+/* Absent — help session */
+.attendance-dot-absent-help {
+    background: transparent;
+    border: 1.5px solid var(--gold-500);
+}
+
+/* No data */
+.attendance-dot-none {
+    background: transparent;
+    border: 1.5px solid rgba(69, 71, 76, 0.2);
+    opacity: 0.5;
+}
+</style>
