@@ -27,7 +27,7 @@
                 class="w-2 h-2 rounded-full shrink-0 bg-transparent"
                 style="border: 1.5px solid var(--alert);"
             ></span>
-            <span>Absent (class)</span>
+            <span>Absent</span>
         </div>
 
         <!-- No session -->

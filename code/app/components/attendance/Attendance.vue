@@ -11,11 +11,11 @@
         weeks: [
             {
                 startDate: '29 Sep',
-                days: ['present', null, 'present', 'present', 'present', 'present', 'present'],
+                days: ['present', null, 'present', 'present', 'present', 'present', 'absent'],
             },
             {
                 startDate: '6 Oct',
-                days: ['present', null, null, 'present', 'present', 'present', 'present'],
+                days: ['absent', null, null, 'present', 'present', 'present', 'present'],
             },
             {
                 startDate: '13 Oct',
