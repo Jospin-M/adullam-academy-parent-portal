@@ -36,14 +36,30 @@
         scrollHeight.value = height;
     });
 
+    /**
+     * Checks if all talking points within a suggestion have been answered
+     * @param {Object} suggestion - The suggestion object containing talking points
+     * @param {Array} suggestion.talkingPoints - Array of talking point objects with id properties
+     * @returns {boolean} True if all talking points have a response, false otherwise
+     */
     function allAnswered(suggestion) {
         return suggestion.talkingPoints.every(tp => tpResponses[tp.id] !== null);
     }
 
+    /**
+     * Toggles the selection state of a talking point chip
+     * @param {string|number} tpId - The unique identifier of the talking point
+     * @param {string} chipType - The type of chip being selected ('answered-well' or 'struggled')
+     */
     function selectTPChip(tpId, chipType) {
         tpResponses[tpId] = tpResponses[tpId] === chipType ? null : chipType;
     }
 
+    /**
+     * Saves the responses for all talking points in a suggestion and removes it from the list
+     * @param {string|number} suggestionId - The unique identifier of the suggestion
+     * @returns {Promise<void>} Completes when the API request is finished
+     */
     async function saveSuggestionResponses(suggestionId) {
         const responses = [];
         const suggestion = suggestions.value.find(s => s.id === suggestionId);
