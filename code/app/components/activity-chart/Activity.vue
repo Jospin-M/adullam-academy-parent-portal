@@ -208,7 +208,7 @@
                         return d.date.toLocaleDateString("en-US", { weekday: "short" });
                     }
                     
-                    return i % 5 === 0
+                    return i % 7 === 0
                         ? d.date.toLocaleDateString("en-US", { month: "short", day: "numeric" })
                         : "";
                 }),
