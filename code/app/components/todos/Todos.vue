@@ -21,16 +21,19 @@
     const allDone = computed(() => completedTodos.value === todos.value.length);
 
     onMounted(() => {
-        if (!listRef.value || todos.value.length <= 5) return
-        const items = listRef.value.querySelectorAll('.todo-item')
-        let height = 0
+        if (!listRef.value || todos.value.length <= 5) return;
+
+        const items = listRef.value.querySelectorAll('.todo-item');
+
+        let height = 0;
+        
         for (let i = 0; i < 5 && i < items.length; i++) {
-            height += items[i].getBoundingClientRect().height
+            height += items[i].getBoundingClientRect().height;
         }
-        scrollHeight.value = height
+        scrollHeight.value = height;
     })
 
-    function toggleTodo(id) {
+    function toggleTodo(id) { // we'll also send the student's id here
         const index = todos.value.findIndex(todo => todo.id === id);
 
         if (!todos.value[index].complete) {
@@ -50,7 +53,7 @@
     <!-- Progress Crown header -->
     <div class="flex items-baseline justify-between mb-4 gap-3">
         <p class="text-[15px] font-semibold headline" id="todo-summary" style="color: var(--navy-900);">
-            Elijah has completed {{ completedTodos }} of {{ todos.length }} to-dos this week
+            Elijah has completed {{ completedTodos }} of {{ todos.length }} to-dos
         </p>
     </div>
 
@@ -101,17 +104,15 @@
                 style="border-top: 1px solid rgba(69,71,76,0.10);"
             >
                 <button
-                    class="todo-checkbox w-4 h-4 rounded ghost-border shrink-0 mt-[2px] cursor-pointer bg-transparent flex items-center justify-center transition-all duration-150 p-0"
+                    class="todo-checkbox w-4 h-4 rounded ghost-border shrink-0 mt-[2px] bg-transparent flex items-center justify-center transition-all duration-150 p-0"
                     :class="{ 'checked': todo.complete }"
-                    @click="toggleTodo(todo.id)"
                     :aria-label="`Mark '${todo.task}' as ${todo.complete ? 'incomplete' : 'complete'}`"
                     :aria-pressed="todo.complete"
                 ></button>
 
                 <span
-                    class="todo-label flex-1 text-[13px] font-normal body-text leading-[1.5] cursor-pointer transition-[color] duration-150"
+                    class="todo-label flex-1 text-[13px] font-normal body-text leading-[1.5] transition-[color] duration-150"
                     style="color: var(--on-surface);"
-                    @click="toggleTodo(todo.id)"
                 >
                     {{ todo.task }}
                 </span>

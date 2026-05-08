@@ -9,8 +9,8 @@
     const parentInitials = parent.name.split(" ").map(n => n[0]).join("");
 
     const children = [
-        { name: "Elijah Johnson", grade: "Year 9" },
-        { name: "Amara Mitchell", grade: "Year 7" },
+        { name: "Elijah Johnson" },
+        { name: "Amara Mitchell" },
     ];
 
     const childrenInitials = children.map(child =>
@@ -78,8 +78,7 @@
 
                             <div class="flex-1 min-w-0">
                                 <div class="text-[13px] font-semibold headline leading-[1.2]" style="color: var(--navy-900);">{{ child.name }}</div>
-                                <div class="text-[11px] body-text mt-[2px]" style="color: var(--text-muted);">{{ child.grade }}</div>
-                            </div>
+                                </div>
 
                             <svg
                                 class="dd-check w-[14px] h-[14px] shrink-0 transition-opacity duration-150"
