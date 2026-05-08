@@ -8,8 +8,7 @@
 
     const { students } = useStudents();
     const student = computed(() => students.value.selectedStudent);
-
-    const suggestions = computed(() => student.value.suggestions)
+    const suggestions = computed(() => student.value.suggestions);
 
     const state = reactive({ // set of boolean flags that determine whether a talking point 'window' for a suggestion should be opened
         openTP: Object.fromEntries(suggestions.value.map(s => [s.id, false])),
@@ -45,13 +44,17 @@
         tpResponses[tpId] = tpResponses[tpId] === chipType ? null : chipType;
     }
 
-    function saveSuggestionResponses(suggestionId) {
+    async function saveSuggestionResponses(suggestionId) {
+        const responses = [];
         const suggestion = suggestions.value.find(s => s.id === suggestionId);
-        // these should be batched for efficiency. when these responses are saved, we'll use the suggestion id embedded in the talking point to update the 'done' flag
+        
         suggestion.talkingPoints.forEach(tp => {
-            tp = { ...tp, response: tpResponses[tp.id] };
-            
-            console.log('saving talking point response', tp); // we'll only the tp id and the response
+            responses.push({ talkingPointId: tp.id, response: tpResponses[tp.id] })
+        });
+
+        await $fetch(`/api/questions/${ suggestionId }`, {
+            method: 'PATCH',
+            body: responses
         });
 
         // remove the suggestion from the list
