@@ -1,19 +1,11 @@
 <script setup>
     import { ref, computed, onMounted } from 'vue';
 
-    const todos = ref([
-        { id: "t1",  complete: false, task: "Watch Python Functions lesson video" },
-        { id: "t2",  complete: false, task: "Complete Week 13 quiz" },
-        { id: "t3",  complete: false, task: "Review loops exercise feedback" },
-        { id: "t4",  complete: false, task: "Watch Week 14 introduction video" },
-        { id: "t5",  complete: false, task: "Install VS Code & Python" },
-        { id: "t6",  complete: false, task: "Complete the Python Functions coding challenge" },
-        { id: "t7",  complete: false, task: "Read Week 14 lesson notes" },
-        { id: "t8",  complete: false, task: "Submit Week 12 reflection" },
-        { id: "t9",  complete: false, task: "Practice writing functions with return values" },
-        { id: "t10", complete: false, task: "Message tutor with any questions before next session" },
-    ]);
-    const completedTodos = ref(todos.value.filter(todo => todo.complete).length);
+    const { students } = useStudents();
+    const student = computed(() => students.value.selectedStudent);
+
+    const todos = computed(() => student.value.todos);
+    const completedTodos = computed(() => todos.value.filter(todo => todo.complete).length);
 
     const listRef = ref(null);
     const scrollHeight = ref(null);
@@ -38,7 +30,7 @@
     <!-- Progress Crown header -->
     <div class="flex items-baseline justify-between mb-4 gap-3">
         <p class="text-[15px] font-semibold headline" id="todo-summary" style="color: var(--navy-900);">
-            Elijah has completed {{ completedTodos }} of {{ todos.length }} to-dos
+            {{ student.name.split(" ")[0] }} has completed {{ completedTodos }} of {{ todos.length }} to-dos
         </p>
     </div>
 
@@ -100,14 +92,6 @@
                     style="color: var(--on-surface);"
                 >
                     {{ todo.task }}
-                </span>
-
-                <span
-                    v-if="todo.overdue"
-                    class="todo-overdue-badge text-[10px] font-semibold rounded-[4px] py-[2px] px-[7px] whitespace-nowrap shrink-0 mt-[3px] transition-opacity duration-300 body-text"
-                    style="background: rgba(194,65,12,0.10); color: var(--alert);"
-                >
-                    {{ todo.overdue }} days overdue
                 </span>
             </li>
         </ul>

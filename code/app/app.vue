@@ -8,9 +8,9 @@
     import Todos from './components/todos/Todos.vue';
     import Attendance from './components/attendance/Attendance.vue';
 
-    const lastUpdated = '3 hours ago';
+    const totalLessons = 15;
 
-    const children = [
+    const students = [
         {
             id: "xyz",
             name: "Elijah Johnson",
@@ -70,7 +70,6 @@
                 "2026-05-30": { quizzes: 3, lessons: 4, challenges: 2 },
             },
             attendance: {
-                label: 'Term 2 · 2025',
                 weeks: [
                     {
                         startDate: '29 Sep',
@@ -90,7 +89,7 @@
                     },
                 ],
             },
-            scores: { passRate: 62, average: 83, insight: "Declining over the past 4 weeks" },
+            scores: { challengePassRate: 62, quizAverage: 73 },
             suggestions: [
                 {
                     id: 's1',
@@ -146,10 +145,10 @@
                 },
             ],
             lessonProgress: [
-                { label: 'Week 1', lessons: 3 },
-                { label: 'Week 2', lessons: 3 },
-                { label: 'Week 3', lessons: 3 },
-                { label: 'Week 4', lessons: 3 },
+                { label: 'Week 1', lessons: 1 },
+                { label: 'Week 2', lessons: 2 },
+                { label: 'Week 3', lessons: 1 },
+                { label: 'Week 4', lessons: 2 },
                 { label: 'Week 5', lessons: 1 },
             ],
             todos: [ 
@@ -163,14 +162,153 @@
                 { id: "t8",  complete: false, task: "Submit Week 12 reflection" },
                 { id: "t9",  complete: true, task: "Practice writing functions with return values" },
                 { id: "t10", complete: false, task: "Message tutor with any questions before next session" },
-            ]
+            ],
+            lastUpdated: "3 hours ago"
+        },
+        {
+            id: "uvw",
+            name: "Sophia Martinez",
+            insight: "Sophia has been highly consistent this month and is showing strong engagement, though a few advanced concepts may need reinforcement before the next assessment.",
+            actionItems: [
+                {
+                    id: "5",
+                    userId: "abc",
+                    action: "Encourage Sophia to spend 20 minutes reviewing dictionary operations and nested data structures before next week's project work."
+                },
+                {
+                    id: "6",
+                    userId: "abc",
+                    action: "Celebrate Sophia’s recent quiz improvement to help reinforce her confidence and consistency."
+                },
+                {
+                    id: "7",
+                    userId: "abc",
+                    action: "Check in with Sophia about her pacing during coding challenges — she may be rushing through debugging steps."
+                },
+                {
+                    id: "8",
+                    userId: "abc",
+                    action: "Set aside time this weekend to review her latest project submission together and discuss how she approached the problem."
+                }
+            ],
+            activity: {
+                "2026-05-01": { quizzes: 3, lessons: 4, challenges: 2 },
+                "2026-05-02": { quizzes: 5, lessons: 6, challenges: 3 },
+                "2026-05-03": { quizzes: 2, lessons: 3, challenges: 1 },
+                "2026-05-04": { quizzes: 4, lessons: 5, challenges: 2 },
+                "2026-05-05": { quizzes: 5, lessons: 7, challenges: 3 },
+                "2026-05-06": { quizzes: 1, lessons: 2, challenges: 1 },
+                "2026-05-07": { quizzes: 3, lessons: 4, challenges: 2 },
+                "2026-05-08": { quizzes: 6, lessons: 8, challenges: 4 },
+                "2026-05-09": { quizzes: 4, lessons: 5, challenges: 2 },
+                "2026-05-10": { quizzes: 2, lessons: 3, challenges: 1 },
+                "2026-05-11": { quizzes: 3, lessons: 4, challenges: 2 },
+                "2026-05-12": { quizzes: 5, lessons: 7, challenges: 3 },
+                "2026-05-13": { quizzes: 4, lessons: 5, challenges: 2 },
+                "2026-05-14": { quizzes: 6, lessons: 8, challenges: 4 },
+                "2026-05-15": { quizzes: 2, lessons: 3, challenges: 1 },
+                "2026-05-16": { quizzes: 4, lessons: 6, challenges: 2 },
+                "2026-05-17": { quizzes: 3, lessons: 4, challenges: 2 },
+                "2026-05-18": { quizzes: 5, lessons: 7, challenges: 3 },
+                "2026-05-19": { quizzes: 4, lessons: 5, challenges: 2 },
+                "2026-05-20": { quizzes: 2, lessons: 3, challenges: 1 },
+                "2026-05-21": { quizzes: 5, lessons: 6, challenges: 3 },
+                "2026-05-22": { quizzes: 3, lessons: 4, challenges: 2 },
+                "2026-05-23": { quizzes: 4, lessons: 6, challenges: 2 },
+                "2026-05-24": { quizzes: 6, lessons: 8, challenges: 4 },
+                "2026-05-25": { quizzes: 3, lessons: 5, challenges: 2 },
+                "2026-05-26": { quizzes: 2, lessons: 3, challenges: 1 },
+                "2026-05-27": { quizzes: 5, lessons: 7, challenges: 3 },
+                "2026-05-28": { quizzes: 3, lessons: 4, challenges: 2 },
+                "2026-05-29": { quizzes: 6, lessons: 7, challenges: 4 },
+                "2026-05-30": { quizzes: 4, lessons: 5, challenges: 2 },
+            },
+            attendance: {
+                weeks: [
+                    {
+                        startDate: '29 Sep',
+                        days: ['present', 'present', 'present', 'present', 'present', null, 'present'],
+                    },
+                    {
+                        startDate: '6 Oct',
+                        days: ['present', 'present', 'present', null, 'present', 'present', 'present'],
+                    },
+                    {
+                        startDate: '13 Oct',
+                        days: ['present', 'present', 'present', 'present', 'present', 'present', null],
+                    },
+                    {
+                        startDate: '20 Oct',
+                        days: ['present', 'present', null, 'present', 'present', null, null],
+                    },
+                ],
+            },
+            scores: { challengePassRate: 88, quizAverage: 91 },
+            suggestions: [
+                {
+                    id: 's5',
+                    studentId: "uvw",
+                    title: 'Dictionaries & Key Access',
+                    description: 'Sophia understands the basics but occasionally mixes up keys and indices in nested structures.',
+                    concepts: ['Dictionary syntax', 'Key lookup', 'Nested dictionaries'],
+                    talkingPoints: [
+                        { id: 's5-q1', text: 'What is the difference between accessing a list item and a dictionary value?', suggestionId: 's5' },
+                        { id: 's5-q2', text: 'Can you explain what happens if you try to access a key that does not exist?', suggestionId: 's5' },
+                        { id: 's5-q3', text: 'Can you write a small dictionary representing a student profile?', suggestionId: 's5' },
+                    ],
+                    done: false
+                },
+                {
+                    id: 's6',
+                    studentId: "uvw",
+                    title: 'Debugging Strategies',
+                    description: 'Sophia often solves problems quickly, but occasionally skips systematic debugging steps when errors appear.',
+                    concepts: ['Reading error messages', 'Testing incrementally', 'Using print debugging'],
+                    talkingPoints: [
+                        { id: 's6-q1', text: 'What is the first thing you usually check when your code throws an error?', suggestionId: 's6' },
+                        { id: 's6-q2', text: 'Why can printing variable values help during debugging?', suggestionId: 's6' },
+                        { id: 's6-q3', text: 'Can you describe a recent bug you solved and how you found the issue?', suggestionId: 's6' },
+                    ],
+                    done: false
+                },
+                {
+                    id: 's7',
+                    studentId: "uvw",
+                    title: 'Functions & Scope',
+                    description: 'Sophia performs well overall, but variable scope mistakes appeared in her latest assignment.',
+                    concepts: ['Local variables', 'Global variables', 'Function scope'],
+                    talkingPoints: [
+                        { id: 's7-q1', text: 'What happens to a variable created inside a function after the function finishes running?', suggestionId: 's7' },
+                        { id: 's7-q2', text: 'Why is using too many global variables usually discouraged?', suggestionId: 's7' },
+                        { id: 's7-q3', text: 'Can two functions use variables with the same name without conflicting?', suggestionId: 's7' },
+                    ],
+                    done: false
+                }
+            ],
+            lessonProgress: [
+                { label: 'Week 1', lessons: 3 },
+                { label: 'Week 2', lessons: 3 },
+                { label: 'Week 3', lessons: 3 },
+                { label: 'Week 4', lessons: 2 },
+                { label: 'Week 5', lessons: 3 },
+            ],
+            todos: [
+                { id: "t11", complete: true, task: "Finish debugging practice worksheet" },
+                { id: "t12", complete: false, task: "Complete nested dictionary exercises" },
+                { id: "t13", complete: true, task: "Watch lesson on variable scope" },
+                { id: "t14", complete: false, task: "Submit Week 14 coding challenge" },
+                { id: "t15", complete: false, task: "Review instructor feedback on latest assignment" },
+                { id: "t16", complete: true, task: "Practice writing reusable functions" },
+                { id: "t17", complete: false, task: "Complete dictionary quiz retry" },
+                { id: "t18", complete: true, task: "Read debugging tips article" },
+            ],
+            lastUpdated: "2 days ago"
         }
     ];
 
-    const { setStudents, selectStudent } = useStudents();
-    setStudents(children);
-    selectStudent("0");
-
+    const { students: kids, setStudents, selectStudent } = useStudents();
+    setStudents(students);
+    selectStudent(0);
 </script>
 
 <template>
@@ -179,19 +317,19 @@
 
         <div class="two-col-grid grid [grid-template-columns:58fr_42fr] max-[700px]:grid-cols-1 max-w-[1200px] mx-auto px-5 sm:px-10">
             <!-- ── LEFT COLUMN ── -->
-            <div class="pt-10 sm:pt-14 pr-0 sm:pr-14 pb-10 sm:pb-16">
+            <div class="pt-10 pb-4 sm:pt-14 pr-0 sm:pr-14">
                 <ActionItems />
 
                 <!-- tonal divider, no line -->
-                <div class="my-10 h-[2px] rounded-[2px]" style="background: var(--surface-container-high);"></div>
+                <div class="mt-10 mb-6 h-[2px] rounded-[2px]" style="background: var(--surface-container-high);"></div>
 
                 <Todos />
             </div>
 
             <!-- ── RIGHT COLUMN (cards) ── -->
-            <div class="pt-10 sm:pt-14 pl-0 sm:pl-10 pb-10 sm:pb-16 flex flex-col gap-6" style="border-left: 1px solid rgba(69,71,76,0.10);">
+            <div class="pt-10 sm:pt-14 pl-0 sm:pl-10 pb-10 sm:pb-16 flex flex-col gap-6 lg:border-l lg:border-[rgba(69,71,76,0.10)]">
                 <Perfomance />
-                <LessonProgress />
+                <LessonProgress :totalLessons />
                 <Attendance />
             </div>
         </div>
@@ -201,8 +339,8 @@
             <Suggestions />
         </div>
 
-        <footer class="py-5 px-5 sm:px-10 max-w-[1200px] mx-auto flex justify-end" style="border-top: 1px solid rgba(69,71,76,0.10);">
-            <span class="text-[12px] body-text" style="color: var(--text-muted);">Last updated {{ lastUpdated }}</span>
+        <footer class="pby2 px-5 sm:p-10 max-w-[1200px] mx-auto flex justify-end" style="border-top: 1px solid rgba(69,71,76,0.10);">
+            <span class="text-[12px] body-text" style="color: var(--text-muted);">Last updated {{ kids.selectedStudent.lastUpdated }}</span>
         </footer>
     </div>
 </template>

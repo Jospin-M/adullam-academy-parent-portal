@@ -6,41 +6,29 @@
     const DAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
     const DAY_TYPES = ['inclass', 'none', 'help', 'help', 'help', 'help', 'inclass'];
 
-    const attendance = {
-        label: 'Term 2 · 2025',
-        weeks: [
-            {
-                startDate: '29 Sep',
-                days: ['present', null, 'present', 'present', 'present', 'present', 'absent'],
-            },
-            {
-                startDate: '6 Oct',
-                days: ['absent', null, null, 'present', 'present', 'present', 'present'],
-            },
-            {
-                startDate: '13 Oct',
-                days: ['present', null, 'present', 'present', null, 'present', 'present'],
-            },
-            {
-                startDate: '20 Oct',
-                days: ['present', null, null, null, null, null, null],
-            },
-        ],
-    };
+    const { students } = useStudents();
+    const student = computed(() => students.value.selectedStudent);
+    const attendance = computed(() => student.value.attendance);
 
-    const totalClassDays = attendance.weeks.reduce((sum, week) =>
-        sum + CLASS_INDICES.filter(i => week.days[i] !== null).length, 0);
+    const totalClassDays = computed(() => {
+        return attendance.value.weeks.reduce((sum, week) =>
+            sum + CLASS_INDICES.filter(i => week.days[i] !== null).length, 0);
+    });
 
-    const presentClassDays = attendance.weeks.reduce((sum, week) =>
+    const presentClassDays = computed(() => {
+        return attendance.value.weeks.reduce((sum, week) =>
         sum + CLASS_INDICES.filter(i => week.days[i] === 'present').length, 0);
+    });
 
-    const absentClassDays = totalClassDays - presentClassDays;
+    const absentClassDays = computed(() => totalClassDays.value - presentClassDays.value);
 
-    const attendancePercent = totalClassDays > 0
-        ? Math.round((presentClassDays / totalClassDays) * 100)
+    const attendancePercent = computed(() => {
+        return totalClassDays.value > 0
+        ? Math.round((presentClassDays.value / totalClassDays.value) * 100)
         : 0;
+    });
 
-    const absencesSummary = `${absentClassDays} absence${absentClassDays !== 1 ? 's' : ''} this term`;
+    const absencesSummary = computed(() => `${absentClassDays.value} absence${absentClassDays.value !== 1 ? 's' : ''} this term`);
 
     const percentColor = computed(() =>
         attendancePercent >= 90 ? 'var(--success)' : 'var(--alert)'
@@ -105,15 +93,6 @@
             aria-label="Term attendance log"
         >
             <div class="pt-[14px]" style="border-top: 1px solid rgba(69,71,76,0.10);">
-                <div class="flex items-baseline justify-between mb-[14px]">
-                    <span class="text-[11px] font-semibold tracking-[0.06em] uppercase body-text" style="color: var(--text-muted);">
-                        {{ attendance.label }}
-                    </span>
-                    <span class="text-[11px] body-text" style="color: var(--text-muted);">
-                        {{ absencesSummary }}
-                    </span>
-                </div>
-
                 <!-- Day headers -->
                 <div class="flex items-center gap-[10px] mb-[6px]">
                     <span class="w-16 shrink-0"></span>

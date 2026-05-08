@@ -1,19 +1,14 @@
 <script setup>
     import { ref } from 'vue';
 
-    const parent = {
+    const parent = { // should be moved up to app.vue
         name: "Sarah Johnson",
         email: "sarah.johnson@adullam.edu"
     };
-
     const parentInitials = parent.name.split(" ").map(n => n[0]).join("");
 
-    const children = [
-        { name: "Elijah Johnson" },
-        { name: "Amara Mitchell" },
-    ];
-
-    const childrenInitials = children.map(child =>
+    const { students, selectStudent } = useStudents();
+    const childrenInitials = students.value.list.map(child =>
         child.name.split(" ").map(n => n[0]).join("")
     );
 
@@ -63,12 +58,15 @@
                 <div class="text-[10px] font-semibold tracking-[0.1em] uppercase px-4 pt-[10px] pb-[5px] body-text" style="color: var(--text-muted);">Viewing dashboard for</div>
 
                 <ul class="list-none">
-                    <li v-for="(child, index) in children" :key="index">
+                    <li v-for="(child, index) in students.list" :key="index">
                         <button
                             class="dd-child-btn flex items-center gap-[10px] w-full px-4 py-2 bg-transparent border-none cursor-pointer text-left transition-[background] duration-[120ms] hover:bg-[rgba(10,22,40,0.04)]"
                             :class="{ 'active': selectedChild === index }"
                             :id="`dd-child-${index}`"
-                            @click="selectedChild = index"
+                            @click="() => {
+                                selectStudent(index);
+                                selectedChild = index;
+                            }"
                         >
                             <div
                                 class="dd-child-avatar w-[26px] h-[26px] rounded-full flex items-center justify-center text-[10px] font-semibold shrink-0 transition-all duration-150 body-text"

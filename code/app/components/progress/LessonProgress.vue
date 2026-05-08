@@ -2,17 +2,13 @@
     import { ref } from 'vue'
     import CircularProgress from './CircularProgress.vue';
 
-    const weeks = [
-        { label: 'Week 1', lessons: 3 },
-        { label: 'Week 2', lessons: 3 },
-        { label: 'Week 3', lessons: 3 },
-        { label: 'Week 4', lessons: 3 },
-        { label: 'Week 5', lessons: 1 },
-    ];
+    defineProps(['totalLessons']);
 
-    const totalLessons = 24;
-    const completedLessons = ref(weeks.map(week => week.lessons).reduce((prev, next) => prev + next));
-
+    const { students } = useStudents();
+    const student = computed(() => students.value.selectedStudent);
+    const weeks = computed(() => student.value.lessonProgress);
+    const completedLessons = computed(() => weeks.value.map(week => week.lessons).reduce((prev, next) => prev + next));
+    
     const showWeeks = ref(false);
 </script>
 
@@ -23,7 +19,6 @@
         <div class="flex justify-center items-center mb-4">
             <CircularProgress :completed="completedLessons" :total="totalLessons" />
         </div>
-
 
         <button
             class="text-[12px] body-text cursor-pointer inline-block mt-[4px] transition-[color] duration-150 bg-transparent border-none p-0 font-normal"

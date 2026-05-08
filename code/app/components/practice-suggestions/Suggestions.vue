@@ -6,76 +6,26 @@
         { type: 'struggled',     label: 'Struggled' },
     ];
 
-    const suggestions = reactive([
-        {
-            id: 's1',
-            studentId: "abc",
-            title: 'Python Functions',
-            description: 'Below 50% on his last two attempts. Worth revisiting before the work compounds.',
-            concepts: ['Defining functions', 'Parameters & arguments', 'Return values'],
-            talkingPoints: [
-                { id: 's1-q1', text: 'Can you write a simple function right now that takes a name and prints a greeting?', suggestionId: 's1', response: null },
-                { id: 's1-q2', text: 'What is the difference between a parameter and an argument?', suggestionId: 's1', response: null },
-                { id: 's1-q3', text: 'What does the <code>return</code> keyword do — and what happens if you leave it out?', suggestionId: 's1', response: null },
-            ],
-            done: false
-        },
-        {
-            id: 's2',
-            studentId: "abc",
-            title: 'Loops & Iteration',
-            description: 'Skipped two loop-based exercises last week without attempting them. A check-in would surface whether this is confidence or understanding.',
-            concepts: ['for loops', 'while loops', 'Break & continue'],
-            talkingPoints: [
-                { id: 's2-q1', text: 'Can you walk me through what a <code>for</code> loop does, step by step?', suggestionId: 's2', response: null },
-                { id: 's2-q2', text: 'What is the difference between a <code>for</code> loop and a <code>while</code> loop — when would you use each?', suggestionId: 's2', response: null },
-                { id: 's2-q3', text: 'Can you write a loop right now that prints the numbers 1 to 10?', suggestionId: 's2', response: null },
-            ],
-            done: false
-        },
-        {
-            id: 's3',
-            studentId: "abc",
-            title: 'Lists & Indexing',
-            description: 'Consistent indexing errors across his last assignment. A quick concept to reinforce before the data structures unit.',
-            concepts: ['Zero-based indexing', 'Negative indices', 'Slicing'],
-            talkingPoints: [
-                { id: 's3-q1', text: 'If I have a list with five items, what index does the last item have — and why?', suggestionId: 's3', response: null },
-                { id: 's3-q2', text: 'What happens when you try to access an index that doesn\'t exist in a list?', suggestionId: 's3', response: null },
-                { id: 's3-q3', text: 'Can you show me how you\'d get the last three items from a list using slicing?', suggestionId: 's3', response: null },
-            ],
-            done: false
-        },
-        {
-            id: 's4',
-            userId: "abc",
-            title: 'Conditionals & Boolean Logic',
-            description: 'Mixing up <code>and</code> and <code>or</code> operators in compound conditions. A short conversation could prevent this becoming a habit.',
-            concepts: ['if / elif / else', 'Boolean operators', 'Comparison operators'],
-            talkingPoints: [
-                { id: 's4-q1', text: 'Can you tell me what this condition evaluates to: <code>True and False or True</code>?', suggestionId: 's4', response: null },
-                { id: 's4-q2', text: 'When would you use <code>elif</code> instead of a second <code>if</code>?', suggestionId: 's4', response: null },
-                { id: 's4-q3', text: 'Can you write a condition that checks whether a number is between 10 and 20?', suggestionId: 's4', response: null },
-            ],
-            done: false
-        },
-    ]);
+    const { students } = useStudents();
+    const student = computed(() => students.value.selectedStudent);
+
+    const suggestions = computed(() => student.value.suggestions)
 
     const state = reactive({ // set of boolean flags that determine whether a talking point 'window' for a suggestion should be opened
-        openTP: Object.fromEntries(suggestions.map(s => [s.id, false])),
+        openTP: Object.fromEntries(suggestions.value.map(s => [s.id, false])),
     });
 
     const tpResponses = reactive(
-        Object.fromEntries(suggestions.flatMap(s => s.talkingPoints.map(tp => [tp.id, null])))
+        Object.fromEntries(suggestions.value.flatMap(s => s.talkingPoints.map(tp => [tp.id, null])))
     );
 
     const listRef = ref(null);
     const scrollHeight = ref(null);
 
-    const isEmpty = computed(() => suggestions.length === 0);
+    const isEmpty = computed(() => suggestions.value.length === 0);
 
     onMounted(() => {
-        if (!listRef.value || suggestions.length <= 3) return;
+        if (!listRef.value || suggestions.value.length <= 3) return;
 
         let height = 0;
         const items = listRef.value.querySelectorAll('.suggestion-item');
@@ -96,23 +46,22 @@
     }
 
     function saveSuggestionResponses(suggestionId) {
-        const suggestion = suggestions.find(s => s.id === suggestionId);
+        const suggestion = suggestions.value.find(s => s.id === suggestionId);
         // these should be batched for efficiency. when these responses are saved, we'll use the suggestion id embedded in the talking point to update the 'done' flag
         suggestion.talkingPoints.forEach(tp => {
             tp = { ...tp, response: tpResponses[tp.id] };
             
-            console.log('saving talking point response', tp);
+            console.log('saving talking point response', tp); // we'll only the tp id and the response
         });
-        console.log(suggestion.talkingPoints)
 
         // remove the suggestion from the list
-        const index = suggestions.findIndex(s => s.id === suggestionId);
-        suggestions.splice(index, 1);
+        const index = suggestions.value.findIndex(s => s.id === suggestionId);
+        suggestions.value.splice(index, 1);
     }
 </script>
 
 <template>
-    <div class="pt-4 pb-16">
+    <div class="pt-4 pb-5">
         <div class="headline text-[18px] font-bold tracking-[-0.01em] mb-6" style="color: var(--navy-900);">Practice suggestions</div>
 
         <!-- Empty state -->
