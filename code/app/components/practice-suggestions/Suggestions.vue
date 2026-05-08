@@ -8,8 +8,7 @@
 
     const { students } = useStudents();
     const student = computed(() => students.value.selectedStudent);
-
-    const suggestions = computed(() => student.value.suggestions)
+    const suggestions = computed(() => student.value.suggestions);
 
     const state = reactive({ // set of boolean flags that determine whether a talking point 'window' for a suggestion should be opened
         openTP: Object.fromEntries(suggestions.value.map(s => [s.id, false])),
@@ -37,21 +36,41 @@
         scrollHeight.value = height;
     });
 
+    /**
+     * Checks if all talking points within a suggestion have been answered
+     * @param {Object} suggestion - The suggestion object containing talking points
+     * @param {Array} suggestion.talkingPoints - Array of talking point objects with id properties
+     * @returns {boolean} True if all talking points have a response, false otherwise
+     */
     function allAnswered(suggestion) {
         return suggestion.talkingPoints.every(tp => tpResponses[tp.id] !== null);
     }
 
+    /**
+     * Toggles the selection state of a talking point chip
+     * @param {string|number} tpId - The unique identifier of the talking point
+     * @param {string} chipType - The type of chip being selected ('answered-well' or 'struggled')
+     */
     function selectTPChip(tpId, chipType) {
         tpResponses[tpId] = tpResponses[tpId] === chipType ? null : chipType;
     }
 
-    function saveSuggestionResponses(suggestionId) {
+    /**
+     * Saves the responses for all talking points in a suggestion and removes it from the list
+     * @param {string|number} suggestionId - The unique identifier of the suggestion
+     * @returns {Promise<void>} Completes when the API request is finished
+     */
+    async function saveSuggestionResponses(suggestionId) {
+        const responses = [];
         const suggestion = suggestions.value.find(s => s.id === suggestionId);
-        // these should be batched for efficiency. when these responses are saved, we'll use the suggestion id embedded in the talking point to update the 'done' flag
+        
         suggestion.talkingPoints.forEach(tp => {
-            tp = { ...tp, response: tpResponses[tp.id] };
-            
-            console.log('saving talking point response', tp); // we'll only the tp id and the response
+            responses.push({ talkingPointId: tp.id, response: tpResponses[tp.id] })
+        });
+
+        await $fetch(`/api/questions/${ suggestionId }`, {
+            method: 'PATCH',
+            body: responses
         });
 
         // remove the suggestion from the list

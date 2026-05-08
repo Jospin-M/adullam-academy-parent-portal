@@ -6,6 +6,11 @@
     const student = computed(() => students.value.selectedStudent);
     const activityData = computed(() => student.value.activity);
 
+    /**
+     * Converts a Date object to a formatted string key (YYYY-MM-DD)
+     * @param {Date} date - The date to convert
+     * @returns {string} The formatted date string in YYYY-MM-DD format
+     */
     function toKey(date) {
         const y = date.getFullYear();
         const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -14,6 +19,14 @@
         return `${y}-${m}-${d}`;
     }
 
+    /**
+     * Calculates the total number of interactions (quizzes + lessons + challenges)
+     * @param {Object} entry - The activity entry containing quiz, lesson, and challenge counts
+     * @param {number} entry.quizzes - Number of quiz interactions
+     * @param {number} entry.lessons - Number of lesson interactions
+     * @param {number} entry.challenges - Number of challenge interactions
+     * @returns {number} The total count of all interactions, or 0 if entry is null
+     */
     function totalInteractions(entry) {
         if (!entry) return 0;
         
@@ -22,6 +35,11 @@
 
     const activeRange = ref("7d");
 
+    /**
+     * Generates an array of dates for the specified range
+     * @param {string} range - The date range ('7d' for 7 days or '30d' for 30 days)
+     * @returns {Date[]} Array of Date objects spanning the requested range
+     */
     function getDateList(range) {
         const today = new Date();
 
@@ -61,6 +79,13 @@
     const tooltipPos = ref({ x: 0, y: 0 });
     const lastSelectedIndex = ref(null);
 
+    /**
+     * Displays a tooltip with activity data for a specific chart data point
+     * @param {Event} event - The mouse or touch event
+     * @param {Object} chartContext - ApexCharts context object containing chart element reference
+     * @param {HTMLElement} chartContext.el - The chart container element
+     * @param {number} i - The index of the data point in the chart
+     */
     function showTooltip(event, chartContext, i) {
         const current = chartData.value;
 
@@ -183,7 +208,7 @@
                         return d.date.toLocaleDateString("en-US", { weekday: "short" });
                     }
                     
-                    return i % 5 === 0
+                    return i % 7 === 0
                         ? d.date.toLocaleDateString("en-US", { month: "short", day: "numeric" })
                         : "";
                 }),

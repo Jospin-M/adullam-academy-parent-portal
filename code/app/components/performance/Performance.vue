@@ -12,7 +12,7 @@
         <div class="text-[11px] font-semibold tracking-[0.1em] uppercase mb-5 body-text" style="color: var(--text-muted);">Coding performance</div>
 
         <div class="flex items-end gap-7 mb-4">
-            <Challenge :challengePassRate="scores.challengePassRate"/>
+            <Challenge :challengePassRate="scores.challengePassRate" />
             <Quiz :quizAverage="scores.quizAverage" />
         </div>
     </div>

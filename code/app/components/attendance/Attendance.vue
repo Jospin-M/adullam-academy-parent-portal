@@ -36,6 +36,12 @@
 
     const showLog = ref(false);
 
+    /**
+     * Determines the CSS class for an attendance dot based on status and day type
+     * @param {string} status - The attendance status ('present', 'absent', or null)
+     * @param {number} dayIndex - The index of the day (0-6) to determine session type (class or help)
+     * @returns {string} The CSS class name for styling the attendance indicator
+     */
     function dotClass(status, dayIndex) {
         const type = DAY_TYPES[dayIndex];
 

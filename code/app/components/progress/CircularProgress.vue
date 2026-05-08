@@ -7,7 +7,6 @@
     });
 
     const size        = 84;
-    const strokeWidth = 5;
     const radius      = 32;
     const circumference = 2 * Math.PI * radius;
 
