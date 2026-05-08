@@ -68,7 +68,7 @@
             responses.push({ talkingPointId: tp.id, response: tpResponses[tp.id] })
         });
 
-        await $fetch(`/api/questions/${ suggestionId }`, {
+        await $fetch(`/api/suggestions/${ suggestionId }/responses`, {
             method: 'PATCH',
             body: responses
         });
