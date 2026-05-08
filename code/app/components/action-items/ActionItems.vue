@@ -1,42 +1,17 @@
 <script setup>
-    import { reactive, ref, onMounted, computed } from 'vue';
+    import { ref, onMounted, computed } from 'vue';
 
-    const data = reactive({
-        insight: "Elijah is making steady progress this term, with a few areas that could use your attention this week.",
-        actionItems: [
-            {
-                id: "1",
-                userId: "abc",
-                action: "Set aside 15–20 minutes this week to review the Python Functions lesson with Elijah and ensure he understands the key concepts before his next assignment."
-            },
-            {
-                id: "2",
-                userId: "abc",
-                action: "Work with Elijah to complete the two overdue tasks within the next 2–3 days to prevent them from impacting his term report."
-            },
-            {
-                id: "3",
-                userId: "abc",
-                action: "Schedule a short review session with Elijah to go over Week 12 concepts before his next quiz to help bring his average above 80%."
-            },
-            {
-                id: "4",
-                userId: "abc",
-                action: "Acknowledge Elijah’s strong progress and encourage him to maintain his current pace to stay ahead of schedule."
-            }
-        ]
-    });
+    const { students } = useStudents();
+    const student = computed(() => students.value.selectedStudent);
+    const isEmpty = computed(() => student.value.actionItems.length === 0);
 
     const listRef = ref(null);
     const scrollHeight = ref(null);
 
-    const isEmpty = computed(() => data.actionItems.length === 0);
-
     onMounted(() => {
-        if (!listRef.value || data.actionItems.length <= 3) return;
+        if (!listRef.value || student.value.actionItems.length <= 3) return;
 
         const items = listRef.value.querySelectorAll('.action-item');
-
         let height = 0;
 
         for (let i = 0; i < 3 && i < items.length; i++) {
@@ -55,7 +30,7 @@
             style="color: var(--navy-900);"
             id="status-text"
         >
-            {{ data.insight }}
+            {{ student.insight }}
         </p>
     </div>
 
@@ -108,9 +83,9 @@
     <div
         v-else
         class="action-list-scroll"
-        :class="{ scrollable: data.actionItems.length > 3 }"
+        :class="{ scrollable: student.actionItems.length > 3 }"
         :style="
-            data.actionItems.length > 3 && scrollHeight
+            student.actionItems.length > 3 && scrollHeight
                 ? { maxHeight: scrollHeight + 'px' }
                 : {}
         "
@@ -122,7 +97,7 @@
             ref="listRef"
         >
             <li
-                v-for="(item, itemIndex) in data.actionItems"
+                v-for="(item, itemIndex) in student.actionItems"
                 :key="item.id"
                 class="action-item flex items-start gap-[14px] py-5 text-[15px] leading-[1.55] font-medium"
                 :data-id="`a${itemIndex}`"

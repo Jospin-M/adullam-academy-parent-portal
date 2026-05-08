@@ -2,38 +2,9 @@
     import { ref, computed, watch } from "vue";
     import VueApexCharts from "vue3-apexcharts";
 
-    const activityData = {
-        "2026-04-01": { quizzes: 2, lessons: 3, challenges: 1 },
-        "2026-04-02": { quizzes: 4, lessons: 5, challenges: 2 },
-        "2026-04-03": { quizzes: 1, lessons: 2, challenges: 0 },
-        "2026-04-04": { quizzes: 5, lessons: 6, challenges: 3 },
-        "2026-04-05": { quizzes: 3, lessons: 4, challenges: 2 },
-        "2026-04-06": { quizzes: 0, lessons: 1, challenges: 0 },
-        "2026-04-07": { quizzes: 2, lessons: 3, challenges: 1 },
-        "2026-04-08": { quizzes: 4, lessons: 7, challenges: 3 },
-        "2026-04-09": { quizzes: 3, lessons: 5, challenges: 2 },
-        "2026-04-10": { quizzes: 1, lessons: 2, challenges: 1 },
-        "2026-04-11": { quizzes: 2, lessons: 4, challenges: 2 },
-        "2026-04-12": { quizzes: 6, lessons: 8, challenges: 4 },
-        "2026-04-13": { quizzes: 2, lessons: 3, challenges: 1 },
-        "2026-04-14": { quizzes: 4, lessons: 6, challenges: 2 },
-        "2026-04-15": { quizzes: 1, lessons: 2, challenges: 0 },
-        "2026-04-16": { quizzes: 3, lessons: 5, challenges: 2 },
-        "2026-04-17": { quizzes: 2, lessons: 3, challenges: 1 },
-        "2026-04-18": { quizzes: 5, lessons: 7, challenges: 3 },
-        "2026-04-19": { quizzes: 3, lessons: 4, challenges: 2 },
-        "2026-04-20": { quizzes: 1, lessons: 2, challenges: 1 },
-        "2026-04-21": { quizzes: 4, lessons: 5, challenges: 2 },
-        "2026-04-22": { quizzes: 2, lessons: 3, challenges: 1 },
-        "2026-04-23": { quizzes: 3, lessons: 5, challenges: 2 },
-        "2026-04-24": { quizzes: 6, lessons: 8, challenges: 4 },
-        "2026-04-25": { quizzes: 2, lessons: 4, challenges: 2 },
-        "2026-04-26": { quizzes: 1, lessons: 3, challenges: 1 },
-        "2026-04-27": { quizzes: 4, lessons: 5, challenges: 2 },
-        "2026-04-28": { quizzes: 2, lessons: 3, challenges: 1 },
-        "2026-04-29": { quizzes: 5, lessons: 6, challenges: 3 },
-        "2026-04-30": { quizzes: 3, lessons: 4, challenges: 2 },
-    };
+    const { students } = useStudents();
+    const student = computed(() => students.value.selectedStudent);
+    const activityData = computed(() => student.value.activity);
 
     function toKey(date) {
         const y = date.getFullYear();
@@ -65,7 +36,7 @@
     const chartData = computed(() => {
         return getDateList(activeRange.value).map((date) => {
             const key = toKey(date);
-            const entry = activityData[key] ?? { quizzes: 0, lessons: 0, challenges: 0 };
+            const entry = activityData.value[key] ?? { quizzes: 0, lessons: 0, challenges: 0 };
             
             return { date, key, ...entry, total: totalInteractions(entry) };
         });
