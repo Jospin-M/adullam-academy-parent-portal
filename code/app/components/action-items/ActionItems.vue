@@ -6,22 +6,22 @@
         actionItems: [
             {
                 id: "1",
-                userId: "abc",
+                studentId: "abc",
                 action: "Set aside 15–20 minutes this week to review the Python Functions lesson with Elijah and ensure he understands the key concepts before his next assignment."
             },
             {
                 id: "2",
-                userId: "abc",
+                studentId: "abc",
                 action: "Work with Elijah to complete the two overdue tasks within the next 2–3 days to prevent them from impacting his term report."
             },
             {
                 id: "3",
-                userId: "abc",
+                studentId: "abc",
                 action: "Schedule a short review session with Elijah to go over Week 12 concepts before his next quiz to help bring his average above 80%."
             },
             {
                 id: "4",
-                userId: "abc",
+                studentId: "abc",
                 action: "Acknowledge Elijah’s strong progress and encourage him to maintain his current pace to stay ahead of schedule."
             }
         ]

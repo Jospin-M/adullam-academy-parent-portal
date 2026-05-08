@@ -10,8 +10,9 @@
 
     const lastUpdated = '3 hours ago';
 
-    const students = [
+    const children = [
         {
+            id: "xyz",
             name: "Elijah Johnson",
             insight: "Elijah is making steady progress this term, with a few areas that could use your attention this week.",
             actionItems: [
@@ -165,6 +166,10 @@
             ]
         }
     ];
+
+    const { setStudents, selectStudent } = useStudents();
+    setStudents(children);
+    selectStudent("0");
 
 </script>
 

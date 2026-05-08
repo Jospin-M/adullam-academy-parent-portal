@@ -32,21 +32,6 @@
         }
         scrollHeight.value = height;
     })
-
-    function toggleTodo(id) { // we'll also send the student's id here
-        const index = todos.value.findIndex(todo => todo.id === id);
-
-        if (!todos.value[index].complete) {
-            completedTodos.value++;
-        } else {
-            completedTodos.value--;
-        }
-
-        todos.value[index].complete = !todos.value[index].complete;
-
-        console.log("sending request to update todo state", todos.value[index].id);
-        console.log(`${completedTodos.value} todos have been completed`);
-    }
 </script>
 
 <template>
