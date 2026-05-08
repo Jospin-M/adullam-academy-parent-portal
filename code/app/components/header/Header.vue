@@ -1,19 +1,16 @@
 <script setup>
     import { ref } from 'vue';
 
-    const parent = { // should be moved up to app.vue
-        name: "Sarah Johnson",
-        email: "sarah.johnson@adullam.edu"
-    };
+    const { parent } = defineProps(['parent']);
     const parentInitials = parent.name.split(" ").map(n => n[0]).join("");
 
     const { students, selectStudent } = useStudents();
-    const childrenInitials = students.value.list.map(child =>
+    const studentInitials = students.value.list.map(child =>
         child.name.split(" ").map(n => n[0]).join("")
     );
 
     const showDropDown = ref(false);
-    const selectedChild = ref(0);
+    const selectedStudent = ref(0);
 </script>
 
 <template>
@@ -61,18 +58,18 @@
                     <li v-for="(child, index) in students.list" :key="index">
                         <button
                             class="dd-child-btn flex items-center gap-[10px] w-full px-4 py-2 bg-transparent border-none cursor-pointer text-left transition-[background] duration-[120ms] hover:bg-[rgba(10,22,40,0.04)]"
-                            :class="{ 'active': selectedChild === index }"
+                            :class="{ 'active': selectedStudent === index }"
                             :id="`dd-child-${index}`"
                             @click="() => {
                                 selectStudent(index);
-                                selectedChild = index;
+                                selectedStudent = index;
                             }"
                         >
                             <div
                                 class="dd-child-avatar w-[26px] h-[26px] rounded-full flex items-center justify-center text-[10px] font-semibold shrink-0 transition-all duration-150 body-text"
                                 style="background: rgba(10,22,40,0.10); color: var(--navy-900);"
                                 aria-hidden="true"
-                            >{{ childrenInitials[index] }}</div>
+                            >{{ studentInitials[index] }}</div>
 
                             <div class="flex-1 min-w-0">
                                 <div class="text-[13px] font-semibold headline leading-[1.2]" style="color: var(--navy-900);">{{ child.name }}</div>
@@ -80,7 +77,7 @@
 
                             <svg
                                 class="dd-check w-[14px] h-[14px] shrink-0 transition-opacity duration-150"
-                                :class="selectedChild === index ? 'opacity-100' : 'opacity-0'"
+                                :class="selectedStudent === index ? 'opacity-100' : 'opacity-0'"
                                 viewBox="0 0 14 14"
                                 fill="none"
                                 style="color: var(--gold-500);"
