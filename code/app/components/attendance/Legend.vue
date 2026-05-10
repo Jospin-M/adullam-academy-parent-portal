@@ -34,7 +34,7 @@
         <div class="flex items-center gap-[5px]">
             <span
                 class="w-2 h-2 rounded-full shrink-0 bg-transparent"
-                style="border: 1.5px solid rgba(69,71,76,0.2); opacity: 0.5;"
+                style="border: 1.5px solid rgba(0, 0, 0, 0.431);"
             ></span>
             <span>No session</span>
         </div>
