@@ -39,7 +39,7 @@
             <div
                 v-show="showDropDown"
                 class="switcher-dropdown absolute top-[calc(100%+8px)] right-0 w-[calc(100vw-40px)] max-w-[280px] min-w-[228px] rounded-[12px] overflow-hidden z-[200] ambient-shadow"
-                style="background: rgba(251,249,246,0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);"
+                style="background: rgba(251,249,246,1); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);"
                 id="switcher-dropdown"
                 role="dialog"
                 aria-label="Account and child switcher"
@@ -114,7 +114,7 @@
         position: sticky;
         top: 0;
         z-index: 100;
-        background: rgba(251, 249, 246, 0.72);
+        background: rgba(251, 249, 246, 1);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
         border-bottom: 1px solid rgba(69, 71, 76, 0.12);

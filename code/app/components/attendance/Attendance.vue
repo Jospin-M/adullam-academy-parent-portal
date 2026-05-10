@@ -147,35 +147,34 @@
 </template>
 
 <style scoped>
-/* Present — in-class (primary signal) */
-.attendance-dot-present-class {
-    background: var(--navy-900);
-    opacity: 0.7;
-}
+    /* Present — in-class (primary signal) */
+    .attendance-dot-present-class {
+        background: var(--navy-900);
+        opacity: 0.7;
+    }
 
-/* Present — help session (secondary signal) */
-.attendance-dot-present-help {
-    background: var(--navy-900);
-    opacity: 0.25;
-    border: 1px solid rgba(15, 23, 42, 0.25);
-}
+    /* Present — help session (secondary signal) */
+    .attendance-dot-present-help {
+        background: var(--navy-900);
+        opacity: 0.25;
+        border: 1px solid rgba(15, 23, 42, 0.25);
+    }
 
-/* Absent — in-class */
-.attendance-dot-absent-class {
-    background: transparent;
-    border: 1.5px solid var(--alert);
-}
+    /* Absent — in-class */
+    .attendance-dot-absent-class {
+        background: transparent;
+        border: 1.5px solid var(--alert);
+    }
 
-/* Absent — help session */
-.attendance-dot-absent-help {
-    background: transparent;
-    border: 1.5px solid var(--gold-500);
-}
+    /* Absent — help session */
+    .attendance-dot-absent-help {
+        background: transparent;
+        border: 1.5px solid var(--gold-500);
+    }
 
-/* No data */
-.attendance-dot-none {
-    background: transparent;
-    border: 1.5px solid rgba(69, 71, 76, 0.2);
-    opacity: 0.5;
-}
+    /* No data */
+    .attendance-dot-none {
+        background: transparent;
+        border: 1.5px solid rgba(0, 0, 0, 0.431);
+    }
 </style>

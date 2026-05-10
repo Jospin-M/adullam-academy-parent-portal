@@ -6,28 +6,28 @@ export default defineEventHandler(async (event) => {
     return {
         students:  [
             {
-                id: "xyz",
+                id: "abc",
                 name: "Elijah Johnson",
                 insight: "Elijah is making steady progress this term, with a few areas that could use your attention this week.",
                 actionItems: [
                     {
                         id: "1",
-                        userId: "abc",
+                        studentId: "abc",
                         action: "Set aside 15–20 minutes this week to review the Python Functions lesson with Elijah and ensure he understands the key concepts before his next assignment."
                     },
                     {
                         id: "2",
-                        userId: "abc",
+                        studentId: "abc",
                         action: "Work with Elijah to complete the two overdue tasks within the next 2–3 days to prevent them from impacting his term report."
                     },
                     {
                         id: "3",
-                        userId: "abc",
+                        studentId: "abc",
                         action: "Schedule a short review session with Elijah to go over Week 12 concepts before his next quiz to help bring his average above 80%."
                     },
                     {
                         id: "4",
-                        userId: "abc",
+                        studentId: "abc",
                         action: "Acknowledge Elijah’s strong progress and encourage him to maintain his current pace to stay ahead of schedule."
                     }
                 ], 
@@ -166,22 +166,22 @@ export default defineEventHandler(async (event) => {
                 actionItems: [
                     {
                         id: "5",
-                        userId: "abc",
+                        studentId: "uvw",
                         action: "Encourage Sophia to spend 20 minutes reviewing dictionary operations and nested data structures before next week's project work."
                     },
                     {
                         id: "6",
-                        userId: "abc",
+                        studentId: "uvw",
                         action: "Celebrate Sophia’s recent quiz improvement to help reinforce her confidence and consistency."
                     },
                     {
                         id: "7",
-                        userId: "abc",
+                        studentId: "uvw",
                         action: "Check in with Sophia about her pacing during coding challenges — she may be rushing through debugging steps."
                     },
                     {
                         id: "8",
-                        userId: "abc",
+                        studentId: "uvw",
                         action: "Set aside time this weekend to review her latest project submission together and discuss how she approached the problem."
                     }
                 ],
