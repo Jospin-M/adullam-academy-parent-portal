@@ -80,8 +80,8 @@
 </script>
 
 <template>
-    <div class="pt-4 pb-5">
-        <div class="headline text-[18px] font-bold tracking-[-0.01em] mb-6" style="color: var(--navy-900);">Practice suggestions</div>
+    <div class="pt-6 pb-5">
+        <div class="headline text-[18px] font-bold tracking-[-0.01em] mb-3" style="color: var(--navy-900);">Practice suggestions</div>
 
         <!-- Empty state -->
         <div v-if="isEmpty" class="py-8 flex flex-col items-center text-center gap-3 w-full">
@@ -109,7 +109,7 @@
             <div
                 v-for="suggestion in suggestions"
                 :key="suggestion.id"
-                class="suggestion-item py-6 max-[700px]:flex-col max-[700px]:gap-[10px]"
+                class="suggestion-item py-4 max-[700px]:flex-col max-[700px]:gap-[10px]"
                 style="border-top: 1px solid rgba(69,71,76,0.10);"
             >
                 <div class="flex-1 min-w-0">
