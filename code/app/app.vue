@@ -48,7 +48,7 @@
             <Suggestions />
         </div>
 
-        <footer class="pby2 px-5 sm:p-10 max-w-[1200px] mx-auto flex justify-end" style="border-top: 1px solid rgba(69,71,76,0.10);">
+        <footer class="pby2 pl-5 sm:p-10 max-w-[1200px] mx-auto flex justify-end" style="border-top: 1px solid rgba(69,71,76,0.10);">
             <span class="text-[12px] body-text" style="color: var(--text-muted);">Last updated {{ students.selectedStudent.lastUpdated }}</span>
         </footer>
     </div>
