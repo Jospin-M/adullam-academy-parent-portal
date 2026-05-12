@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model action_items {
+  id           BigInt   @id @default(autoincrement())
+  student_name String
+  text         String
+  timestamp    DateTime @db.Timestamptz(6)
+}
+
+model concepts {
+  id            BigInt      @id @default(autoincrement())
+  suggestion_id BigInt
+  text          String
+  suggestions   suggestions @relation(fields: [suggestion_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model insights {
+  id           BigInt   @id @default(autoincrement())
+  student_name String
+  text         String
+  timestamp    DateTime @db.Timestamptz(6)
+}
+
+model last_updated {
+  id           BigInt   @id @default(autoincrement())
+  student_name String
+  timestamp    DateTime @db.Timestamptz(6)
+}
+
+model suggestions {
+  id             BigInt           @id @default(autoincrement())
+  student_name   String
+  title          String
+  text           String
+  done           Boolean          @default(false)
+  concepts       concepts[]
+  talking_points talking_points[]
+}
+
+model talking_points {
+  id            BigInt       @id @default(autoincrement())
+  suggestion_id BigInt
+  text          String
+  response      tp_response?
+  suggestions   suggestions  @relation(fields: [suggestion_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+enum tp_response {
+  answered_well @map("answered-well")
+  struggled
+}
