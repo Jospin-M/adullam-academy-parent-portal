@@ -2,6 +2,7 @@ import path from "node:path";
 import { config } from "dotenv";
 
 import { Client } from "@notionhq/client";
+import { randomUUID } from "node:crypto";
 
 config({ path: path.resolve("../../.env") })
 
@@ -118,11 +119,6 @@ function getScores(studentData: NotionData[]) {
 /**
  * Groups a student's lesson activity into weekly buckets starting from a course start date.
  *
- * Snaps the course start date back to the previous Sunday, then counts how
- * many lessons fall into each subsequent 7-day window. Lessons dated before
- * the course start are ignored. Weeks with no lessons are included with a
- * count of 0.
- *
  * @param studentData - Notion records for a single student.
  * @param courseStartDate - ISO date string marking the start of the course.
  * @returns An array of objects, each containing a week label and lesson count.
@@ -168,7 +164,31 @@ function getWeeklyLessons(studentData: NotionData[], courseStartDate: string) {
     return weeks;
 }
 
+/**
+ * Extracts and formats a student's todo items from their Notion records.
+ *
+ * @param studentData - Notion records for a single student.
+ * @returns An array of todo objects, each containing:
+ *   - `id`: A generated UUID.
+ *   - `complete`: Whether the todo is marked done (`score === 1`).
+ *   - `task`: The todo's title.
+ *
+ * @example
+ * const todos = getTodos(studentData);
+ * // [
+ * //   { id: '...', complete: true, task: 'Read chapter 3' },
+ * //   { id: '...', complete: false, task: 'Submit assignment' }
+ * // ]
+ */
+function getTodos(studentData: NotionData[]) {
+    const todos = studentData.filter(data => data.content_type === 'Todo')
+        .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+        .map(todo => ({ id: randomUUID(), complete: todo.score == 1 ? true : false, task: todo.content_title }));
+
+    return todos;
+}
+
 const { results: rawStudentData } = await getStudent('Kofi M.');
 const studentData = (rawStudentData as unknown as RawNotionData[]).map(data => flatten(data));
 
-const todos = studentData.filter(data => data.content_type === 'Todo');
+console.log(getTodos(studentData))
