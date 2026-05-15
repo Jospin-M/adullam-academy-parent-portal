@@ -140,9 +140,9 @@ export function getWeeklyLessons(studentData: NotionData[], courseStartDate: str
     if (lessons.length === 0) return [];
 
     // Convert timestamps to Date objects and sort chronologically.
-const lessonDates = lessons
-    .map(lesson => new Date(lesson.timestamp))
-    .sort((a, b) => a.getTime() - b.getTime());
+    const lessonDates = lessons
+        .map(lesson => new Date(lesson.timestamp))
+        .sort((a, b) => a.getTime() - b.getTime());
 
     // Anchor the reference to midnight UTC on the Sunday on or before the course start date.
     // Subtracting getUTCDay() (0 for Sunday, 1 for Monday, ...) snaps back to that Sunday.
