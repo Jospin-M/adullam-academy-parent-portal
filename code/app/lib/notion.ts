@@ -16,14 +16,27 @@ const notion = new Client({ auth: process.env.NOTION_API_KEY })
  *
  * @throws Will throw if `NOTION_DB_DATASOURCE_ID` is not set or if the Notion API request fails.
  */
-async function getStudent(name: string) {
-    return await notion.dataSources.query({
+export async function getStudent(name: string) {   
+    const { results } = await notion.dataSources.query({
         data_source_id: process.env.NOTION_DB_DATASOURCE_ID!,
         filter: {
             property: 'student_name',
             rich_text: { equals: name }
         }
     });
+
+    function flatten(data: RawNotionData): NotionData {
+        return {
+            score: data.properties.score.number,
+            timestamp: data.properties.timestamp.date.start,
+            content_type: data.properties.content_type.select.name,
+            content_title: data.properties.content_title.title[0]!.plain_text,
+        };
+    }
+
+    const studentData = (results as unknown as RawNotionData[]).map(data => flatten(data));
+
+    return studentData;
 }
 
 type RawNotionData = { 
@@ -35,21 +48,12 @@ type RawNotionData = {
     } 
 };
 
-type NotionData = {
+export type NotionData = {
     score: number,
     content_type: string,
     content_title: string,
     timestamp: string
 };
-
-function flatten(data: RawNotionData): NotionData {
-    return {
-        score: data.properties.score.number,
-        timestamp: data.properties.timestamp.date.start,
-        content_type: data.properties.content_type.select.name,
-        content_title: data.properties.content_title.title[0]!.plain_text,
-    };
-}
 
 /**
  * Aggregates a student's activity counts by date.
@@ -69,7 +73,7 @@ function flatten(data: RawNotionData): NotionData {
  * //   "2026-05-15": { quizzes: 0, lessons: 3, challenges: 1 }
  * // }
  */
-function getDailyActivity(studentData: NotionData[]) {
+export function getDailyActivity(studentData: NotionData[]) {
     const activityDates = new Array(...new Set(studentData.map(data => data.timestamp)).keys()).sort();
     const activity = Object.fromEntries(activityDates.map(date => [date, { quizzes: 0, lessons: 0, challenges: 0 }]));
 
@@ -98,7 +102,7 @@ function getDailyActivity(studentData: NotionData[]) {
  * const { challengePassRate, quizAverage } = getScores(studentData);
  * // { challengePassRate: 75, quizAverage: 88 }
  */
-function getScores(studentData: NotionData[]) {
+export function getScores(studentData: NotionData[]) {
     const quizzes = studentData.filter(data => data.content_type === 'Quiz');
     const challenges = studentData.filter(data => data.content_type === 'Challenge');
 
@@ -131,27 +135,34 @@ function getScores(studentData: NotionData[]) {
  * //   ...
  * // ]
  */
-function getWeeklyLessons(studentData: NotionData[], courseStartDate: string) {
+export function getWeeklyLessons(studentData: NotionData[], courseStartDate: string) {
     const lessons = studentData.filter(data => data.content_type === 'Lesson');
     if (lessons.length === 0) return [];
 
-    const lessonDates = lessons
-        .map(lesson => new Date(lesson.timestamp))
-        .sort((a, b) => a.getTime() - b.getTime());
+    // Convert timestamps to Date objects and sort chronologically.
+const lessonDates = lessons
+    .map(lesson => new Date(lesson.timestamp))
+    .sort((a, b) => a.getTime() - b.getTime());
 
+    // Anchor the reference to midnight UTC on the Sunday on or before the course start date.
+    // Subtracting getUTCDay() (0 for Sunday, 1 for Monday, ...) snaps back to that Sunday.
     const reference = new Date(courseStartDate);
     reference.setUTCHours(0, 0, 0, 0);
     reference.setUTCDate(reference.getUTCDate() - reference.getUTCDay());
 
+    // Compute which week a given date falls into, relative to the reference Sunday.
     const MS_PER_WEEK = 7 * 24 * 60 * 60 * 1000;
     const weekIndexFor = (date: Date) =>
         Math.floor((date.getTime() - reference.getTime()) / MS_PER_WEEK);
 
+    // Drop any lessons that occurred before the course start (negative week index).
     const validDates = lessonDates.filter(date => weekIndexFor(date) >= 0);
     if (validDates.length === 0) return [];
 
+    // Determine how many weeks to render, based on the most recent valid lesson.
     const totalWeeks = weekIndexFor(validDates[validDates.length - 1]!) + 1;
 
+    // Pre-fill every week with a zero count so gaps in activity still appear in the output.
     const weeks = Array.from({ length: totalWeeks }, (_, i) => ({
         label: `Week ${i + 1}`,
         lessons: 0,
@@ -180,15 +191,10 @@ function getWeeklyLessons(studentData: NotionData[], courseStartDate: string) {
  * //   { id: '...', complete: false, task: 'Submit assignment' }
  * // ]
  */
-function getTodos(studentData: NotionData[]) {
+export function getTodos(studentData: NotionData[]) {
     const todos = studentData.filter(data => data.content_type === 'Todo')
         .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
         .map(todo => ({ id: randomUUID(), complete: todo.score == 1 ? true : false, task: todo.content_title }));
 
     return todos;
 }
-
-const { results: rawStudentData } = await getStudent('Kofi M.');
-const studentData = (rawStudentData as unknown as RawNotionData[]).map(data => flatten(data));
-
-console.log(getTodos(studentData))
