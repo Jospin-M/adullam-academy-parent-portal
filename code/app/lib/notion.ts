@@ -112,11 +112,63 @@ function getScores(studentData: NotionData[]) {
         return average;
     }
 
-    return { challengePassRate: calculateAverage(challenges), quizAverage: calculateAverage(quizzes) }
+    return { challengePassRate: calculateAverage(challenges), quizAverage: calculateAverage(quizzes) };
+}
+
+/**
+ * Groups a student's lesson activity into weekly buckets starting from a course start date.
+ *
+ * Snaps the course start date back to the previous Sunday, then counts how
+ * many lessons fall into each subsequent 7-day window. Lessons dated before
+ * the course start are ignored. Weeks with no lessons are included with a
+ * count of 0.
+ *
+ * @param studentData - Notion records for a single student.
+ * @param courseStartDate - ISO date string marking the start of the course.
+ * @returns An array of objects, each containing a week label and lesson count.
+ *
+ * @example
+ * const weekly = getWeeklyLessons(studentData, '2026-01-05');
+ * // [
+ * //   { label: 'Week 1', lessons: 3 },
+ * //   { label: 'Week 2', lessons: 2 },
+ * //   ...
+ * // ]
+ */
+function getWeeklyLessons(studentData: NotionData[], courseStartDate: string) {
+    const lessons = studentData.filter(data => data.content_type === 'Lesson');
+    if (lessons.length === 0) return [];
+
+    const lessonDates = lessons
+        .map(lesson => new Date(lesson.timestamp))
+        .sort((a, b) => a.getTime() - b.getTime());
+
+    const reference = new Date(courseStartDate);
+    reference.setUTCHours(0, 0, 0, 0);
+    reference.setUTCDate(reference.getUTCDate() - reference.getUTCDay());
+
+    const MS_PER_WEEK = 7 * 24 * 60 * 60 * 1000;
+    const weekIndexFor = (date: Date) =>
+        Math.floor((date.getTime() - reference.getTime()) / MS_PER_WEEK);
+
+    const validDates = lessonDates.filter(date => weekIndexFor(date) >= 0);
+    if (validDates.length === 0) return [];
+
+    const totalWeeks = weekIndexFor(validDates[validDates.length - 1]!) + 1;
+
+    const weeks = Array.from({ length: totalWeeks }, (_, i) => ({
+        label: `Week ${i + 1}`,
+        lessons: 0,
+    }));
+
+    validDates.forEach(date => {
+        weeks[weekIndexFor(date)]!.lessons += 1;
+    });
+
+    return weeks;
 }
 
 const { results: rawStudentData } = await getStudent('Kofi M.');
 const studentData = (rawStudentData as unknown as RawNotionData[]).map(data => flatten(data));
 
 const todos = studentData.filter(data => data.content_type === 'Todo');
-const lessons = studentData.filter(data => data.content_type === 'Lesson');
